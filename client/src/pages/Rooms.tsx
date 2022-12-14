@@ -64,7 +64,7 @@ export const Rooms = () => {
   return (
     <>
       <NavBar />
-      <Box px={64} pt={14}>
+      <Box px={64} pt={8}>
         <Flex mb={8}>
           <Button colorScheme={'green'} size={'lg'} mr={4}>
             New
