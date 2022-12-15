@@ -83,7 +83,6 @@ export const Rooms = () => {
         </Flex>
         <SimpleGrid
           spacing={6}
-          columns={2}
           templateColumns="repeat(auto-fill, minmax(384px, 1fr))"
         >
           {ROOMS.filter((room) =>
