@@ -6,9 +6,11 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  SimpleGrid
+  SimpleGrid,
+  useDisclosure
 } from '@chakra-ui/react'
 import { ChangeEvent, useState } from 'react'
+import { CreateRoomModal } from '../components/CreateRoomModal'
 import { NavBar } from '../components/NavBar'
 import { RoomCard } from '../components/RoomCard'
 
@@ -57,6 +59,7 @@ const ROOMS = [
 
 export const Rooms = () => {
   const [searchValue, setSearchValue] = useState('')
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(event.target.value)
@@ -66,7 +69,7 @@ export const Rooms = () => {
       <NavBar />
       <Box px={64} pt={8}>
         <Flex mb={8}>
-          <Button colorScheme={'green'} size={'lg'} mr={4}>
+          <Button onClick={onOpen} colorScheme={'green'} size={'lg'} mr={4}>
             New
           </Button>
           <InputGroup size={'lg'}>
@@ -91,6 +94,7 @@ export const Rooms = () => {
             <RoomCard {...room} />
           ))}
         </SimpleGrid>
+        <CreateRoomModal isOpen={isOpen} onClose={onClose} />
       </Box>
     </>
   )
