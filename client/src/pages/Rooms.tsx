@@ -19,7 +19,7 @@ type Room = {
   id: string
   name: string
   host: string
-  players: number
+  players: string[]
   config: {
     songs: number
     guessTime: number
@@ -34,17 +34,32 @@ export const Rooms = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
-    socket?.emit('room:list', (res: { data: Room[] }) => {
+    socket.emit('room:list', (res: { data: Room[] }) => {
       setRooms(res.data)
     })
 
-    socket?.on('room:created', (room: Room) => {
+    socket.on('room:created', (room: Room) => {
       setRooms((prevRooms) => [...prevRooms, room])
     })
 
+    socket.on('room:joined', ({ roomId, playerId }) => {
+      setRooms((prevRooms) => {
+        prevRooms.forEach((room) => {
+          if (room.id === roomId) {
+            if (!room.players.includes(playerId)) {
+              room.players.push(playerId)
+            }
+          }
+        })
+
+        return [...prevRooms]
+      })
+    })
+
     return () => {
-      socket?.off('room:list')
-      socket?.off('room:created')
+      socket.off('room:list')
+      socket.off('room:created')
+      socket.off('room:joined')
     }
   }, [socket])
 

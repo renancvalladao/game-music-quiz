@@ -22,11 +22,40 @@ io.on('connection', (socket) => {
     callback({ data: rooms })
   })
 
-  socket.on('room:create', ({ name, host, config }) => {
-    const room = { id: randomUUID(), name, host, players: 1, config }
+  socket.on('room:create', ({ name, config }, callback) => {
+    const roomId = randomUUID()
+    const room = {
+      id: roomId,
+      name,
+      host: socket.id,
+      players: [],
+      config
+    }
     rooms.push(room)
 
     io.emit('room:created', room)
+    callback(roomId)
+  })
+
+  socket.on('room:join', (roomId, callback) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
+    }
+
+    if (room.config.capacity === room.players.length) {
+      // TODO: FULL
+      return
+    }
+
+    if (!room.players.includes(socket.id)) {
+      socket.join(roomId)
+      room.players.push(socket.id)
+    }
+
+    callback(room)
+    io.emit('room:joined', { roomId, playerId: socket.id })
   })
 })
 

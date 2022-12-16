@@ -1,11 +1,51 @@
 import { PlayerAvatar } from '../components/PlayerAvatar'
 import { NavBar } from '../components/NavBar'
 import { Box, Button, Flex, SimpleGrid, Text, VStack } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { SocketContext } from '../context/SocketContext'
+
+type Room = {
+  id: string
+  name: string
+  host: string
+  players: string[]
+  config: {
+    songs: number
+    guessTime: number
+    capacity: number
+  }
+}
 
 export const Lobby = () => {
-  const [isHost, setIsHost] = useState(true)
+  const { roomId } = useParams()
+  const socket = useContext(SocketContext)
   const [isReady, setIsReady] = useState(false)
+  const [room, setRoom] = useState<Room | null>(null)
+  const isHost = socket.id === room?.host
+
+  useEffect(() => {
+    socket.emit('room:join', roomId, (room: Room) => {
+      setRoom(room)
+    })
+
+    socket.on('room:joined', ({ roomId, playerId }) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        if (prevRoom.id === roomId) {
+          if (!prevRoom.players.includes(playerId)) {
+            prevRoom.players.push(playerId)
+          }
+        }
+
+        return { ...prevRoom }
+      })
+    })
+
+    return () => {
+      socket.off('room:joined')
+    }
+  }, [socket, roomId])
 
   return (
     <Box>
@@ -42,14 +82,13 @@ export const Lobby = () => {
             templateColumns="repeat(auto-fill, minmax(272px, 1fr))"
             w={'100%'}
           >
-            <PlayerAvatar name="Renan" isHost={isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
-            <PlayerAvatar name="Renan" isHost={!isHost} />
+            {room?.players.map((player) => (
+              <PlayerAvatar
+                key={player}
+                name={player}
+                isHost={player === room.host}
+              />
+            ))}
           </SimpleGrid>
         </VStack>
         <Box h={'calc(100vh - 64px)'} w={'500px'} bg={'pink'}></Box>

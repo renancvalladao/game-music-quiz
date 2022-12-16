@@ -18,6 +18,7 @@ import {
   VStack
 } from '@chakra-ui/react'
 import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { SocketContext } from '../context/SocketContext'
 
 type CreateRoomModalProps = {
@@ -26,6 +27,7 @@ type CreateRoomModalProps = {
 }
 
 export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
+  const navigate = useNavigate()
   const socket = useContext(SocketContext)
   const [roomName, setRoomName] = useState('')
   const [numberOfPlayers, setNumberOfPlayers] = useState('5')
@@ -33,15 +35,20 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
   const [guessTime, setGuessTime] = useState('20')
 
   const createRoom = () => {
-    socket?.emit('room:create', {
-      name: roomName,
-      host: socket.id,
-      config: {
-        songs: parseInt(numberOfSongs),
-        guessTime: parseInt(guessTime),
-        capacity: parseInt(numberOfPlayers)
+    socket.emit(
+      'room:create',
+      {
+        name: roomName,
+        config: {
+          songs: parseInt(numberOfSongs),
+          guessTime: parseInt(guessTime),
+          capacity: parseInt(numberOfPlayers)
+        }
+      },
+      (roomId: string) => {
+        navigate(`/room/${roomId}`)
       }
-    })
+    )
   }
 
   return (

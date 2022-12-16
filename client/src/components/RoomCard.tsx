@@ -11,11 +11,13 @@ import {
   Text,
   Tooltip
 } from '@chakra-ui/react'
+import { useNavigate } from 'react-router-dom'
 
 type RoomCardProps = {
+  id: string
   name: string
   host: string
-  players: number
+  players: string[]
   config: {
     songs: number
     guessTime: number
@@ -23,8 +25,15 @@ type RoomCardProps = {
   }
 }
 
-export const RoomCard = ({ name, host, players, config }: RoomCardProps) => {
-  const isFull = players === config.capacity
+export const RoomCard = ({
+  id,
+  name,
+  host,
+  players,
+  config
+}: RoomCardProps) => {
+  const navigate = useNavigate()
+  const isFull = players.length === config.capacity
 
   return (
     <Card w="100%">
@@ -36,11 +45,11 @@ export const RoomCard = ({ name, host, players, config }: RoomCardProps) => {
         <Progress
           borderRadius={'lg'}
           size={'lg'}
-          value={(players / config.capacity) * 100}
+          value={(players.length / config.capacity) * 100}
           colorScheme={isFull ? 'green' : 'blue'}
         />
         <Text align={'center'}>
-          {players}/{config.capacity} players
+          {players.length}/{config.capacity} players
         </Text>
       </CardBody>
       <CardFooter alignItems={'center'} justify={'space-between'}>
@@ -59,7 +68,9 @@ export const RoomCard = ({ name, host, players, config }: RoomCardProps) => {
             </Flex>
           </Tooltip>
         </Flex>
-        <Button isDisabled={isFull}>Join</Button>
+        <Button onClick={() => navigate(`/room/${id}`)} isDisabled={isFull}>
+          Join
+        </Button>
       </CardFooter>
     </Card>
   )

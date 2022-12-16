@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="rooms" element={<Rooms />} />
-          <Route path="room" element={<Lobby />} />
+          <Route path="room/:roomId" element={<Lobby />} />
           <Route path="game" element={<InGame />} />
         </Routes>
       </ChakraProvider>
