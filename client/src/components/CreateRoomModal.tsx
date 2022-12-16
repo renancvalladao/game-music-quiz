@@ -17,7 +17,8 @@ import {
   NumberInputStepper,
   VStack
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { SocketContext } from '../context/SocketContext'
 
 type CreateRoomModalProps = {
   isOpen: boolean
@@ -25,10 +26,23 @@ type CreateRoomModalProps = {
 }
 
 export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
+  const socket = useContext(SocketContext)
   const [roomName, setRoomName] = useState('')
   const [numberOfPlayers, setNumberOfPlayers] = useState('5')
   const [numberOfSongs, setNumberOfSongs] = useState('15')
   const [guessTime, setGuessTime] = useState('20')
+
+  const createRoom = () => {
+    socket?.emit('room:create', {
+      name: roomName,
+      host: socket.id,
+      config: {
+        songs: parseInt(numberOfSongs),
+        guessTime: parseInt(guessTime),
+        capacity: parseInt(numberOfPlayers)
+      }
+    })
+  }
 
   return (
     <Modal
@@ -57,15 +71,14 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
             <FormControl>
               <FormLabel>Number of Players</FormLabel>
               <NumberInput
+                value={numberOfPlayers}
+                onChange={(value) => setNumberOfPlayers(value)}
                 isValidCharacter={(value) => Number.isInteger(+value)}
                 defaultValue={5}
                 min={1}
                 max={10}
               >
-                <NumberInputField
-                  value={numberOfPlayers}
-                  onChange={(e) => setNumberOfPlayers(e.target.value)}
-                />
+                <NumberInputField />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
                   <NumberDecrementStepper />
@@ -75,15 +88,14 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
             <FormControl>
               <FormLabel>Number of Songs</FormLabel>
               <NumberInput
+                value={numberOfSongs}
+                onChange={(value) => setNumberOfSongs(value)}
                 isValidCharacter={(value) => Number.isInteger(+value)}
                 defaultValue={15}
                 min={1}
                 max={20}
               >
-                <NumberInputField
-                  value={numberOfSongs}
-                  onChange={(e) => setNumberOfSongs(e.target.value)}
-                />
+                <NumberInputField />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
                   <NumberDecrementStepper />
@@ -93,15 +105,14 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
             <FormControl>
               <FormLabel>Guess Time</FormLabel>
               <NumberInput
+                value={guessTime}
+                onChange={(value) => setGuessTime(value)}
                 isValidCharacter={(value) => Number.isInteger(+value)}
                 defaultValue={20}
                 min={10}
                 max={60}
               >
-                <NumberInputField
-                  value={guessTime}
-                  onChange={(e) => setGuessTime(e.target.value)}
-                />
+                <NumberInputField />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
                   <NumberDecrementStepper />
@@ -112,7 +123,17 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="green" onClick={onClose}>
+          <Button
+            colorScheme="green"
+            onClick={() => {
+              createRoom()
+              setRoomName('')
+              setNumberOfPlayers('5')
+              setNumberOfSongs('15')
+              setGuessTime('20')
+              onClose()
+            }}
+          >
             Create
           </Button>
         </ModalFooter>
