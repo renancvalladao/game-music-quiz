@@ -5,18 +5,6 @@ import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { SocketContext } from '../context/SocketContext'
 
-type Room = {
-  id: string
-  name: string
-  host: string
-  players: string[]
-  config: {
-    songs: number
-    guessTime: number
-    capacity: number
-  }
-}
-
 export const Lobby = () => {
   const { roomId } = useParams()
   const socket = useContext(SocketContext)

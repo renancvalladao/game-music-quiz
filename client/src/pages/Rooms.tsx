@@ -15,18 +15,6 @@ import { NavBar } from '../components/NavBar'
 import { RoomCard } from '../components/RoomCard'
 import { SocketContext } from '../context/SocketContext'
 
-type Room = {
-  id: string
-  name: string
-  host: string
-  players: string[]
-  config: {
-    songs: number
-    guessTime: number
-    capacity: number
-  }
-}
-
 export const Rooms = () => {
   const socket = useContext(SocketContext)
   const [rooms, setRooms] = useState<Room[]>([])
