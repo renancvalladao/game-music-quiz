@@ -9,57 +9,44 @@ import {
   SimpleGrid,
   useDisclosure
 } from '@chakra-ui/react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { CreateRoomModal } from '../components/CreateRoomModal'
 import { NavBar } from '../components/NavBar'
 import { RoomCard } from '../components/RoomCard'
+import { SocketContext } from '../context/SocketContext'
 
-const ROOMS = [
-  {
-    name: 'Room #1',
-    host: 'Renan',
-    players: 3,
-    config: {
-      songs: 20,
-      guessTime: 20,
-      capacity: 10
-    }
-  },
-  {
-    name: 'Room #2',
-    host: 'Cendon',
-    players: 2,
-    config: {
-      songs: 15,
-      guessTime: 25,
-      capacity: 5
-    }
-  },
-  {
-    name: 'Room #3',
-    host: 'Cadu',
-    players: 6,
-    config: {
-      songs: 5,
-      guessTime: 30,
-      capacity: 6
-    }
-  },
-  {
-    name: 'Room #4',
-    host: 'Daniel',
-    players: 2,
-    config: {
-      songs: 10,
-      guessTime: 20,
-      capacity: 3
-    }
+type Room = {
+  id: string
+  name: string
+  host: string
+  players: number
+  config: {
+    songs: number
+    guessTime: number
+    capacity: number
   }
-]
+}
 
 export const Rooms = () => {
+  const socket = useContext(SocketContext)
+  const [rooms, setRooms] = useState<Room[]>([])
   const [searchValue, setSearchValue] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  useEffect(() => {
+    socket?.emit('room:list', (res: { data: Room[] }) => {
+      setRooms(res.data)
+    })
+
+    socket?.on('room:created', (room: Room) => {
+      setRooms((prevRooms) => [...prevRooms, room])
+    })
+
+    return () => {
+      socket?.off('room:list')
+      socket?.off('room:created')
+    }
+  }, [socket])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(event.target.value)
@@ -85,13 +72,15 @@ export const Rooms = () => {
           spacing={6}
           templateColumns="repeat(auto-fill, minmax(384px, 1fr))"
         >
-          {ROOMS.filter((room) =>
-            room.name
-              .toLocaleLowerCase()
-              .includes(searchValue.toLocaleLowerCase())
-          ).map((room) => (
-            <RoomCard {...room} />
-          ))}
+          {rooms
+            .filter((room) =>
+              room.name
+                .toLocaleLowerCase()
+                .includes(searchValue.toLocaleLowerCase())
+            )
+            .map((room) => (
+              <RoomCard key={room.id} {...room} />
+            ))}
         </SimpleGrid>
         <CreateRoomModal isOpen={isOpen} onClose={onClose} />
       </Box>
