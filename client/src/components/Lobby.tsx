@@ -12,7 +12,7 @@ export const Lobby = ({ room, socketId }: LobbyProps) => {
   const isHost = socketId === room?.host
 
   return (
-    <VStack w={'100%'} px={64} pt={8} spacing={8}>
+    <VStack px={64} spacing={8}>
       {isHost ? (
         <Button colorScheme="green" size="lg" py={8} w={'180px'}>
           <Text fontSize={'2xl'}>Start</Text>
