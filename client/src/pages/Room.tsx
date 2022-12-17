@@ -39,11 +39,7 @@ export const Room = () => {
       <NavBar />
       <Flex>
         <Box w={'100%'} pt={8}>
-          {room?.playing ? (
-            <InGame />
-          ) : (
-            <Lobby room={room} socketId={socket.id} />
-          )}
+          {room?.playing ? <InGame /> : <Lobby room={room} />}
         </Box>
         <Box h={'calc(100vh - 64px)'} w={'500px'} bg={'pink'}></Box>
       </Flex>

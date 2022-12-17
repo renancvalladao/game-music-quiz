@@ -1,15 +1,16 @@
 import { Button, SimpleGrid, Text, VStack } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { SocketContext } from '../context/SocketContext'
 import { PlayerAvatar } from './PlayerAvatar'
 
 type LobbyProps = {
   room: Room | null
-  socketId: string
 }
 
-export const Lobby = ({ room, socketId }: LobbyProps) => {
+export const Lobby = ({ room }: LobbyProps) => {
+  const socket = useContext(SocketContext)
   const [isReady, setIsReady] = useState(false)
-  const isHost = socketId === room?.host
+  const isHost = socket.id === room?.host
 
   return (
     <VStack px={64} spacing={8}>
