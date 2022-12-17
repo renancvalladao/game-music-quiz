@@ -29,8 +29,20 @@ export const Room = () => {
       })
     })
 
+    socket.on('room:started', (roomId) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        if (prevRoom.id === roomId) {
+          prevRoom.playing = true
+        }
+
+        return { ...prevRoom }
+      })
+    })
+
     return () => {
       socket.off('room:joined')
+      socket.off('room:started')
     }
   }, [socket, roomId])
 
@@ -39,7 +51,13 @@ export const Room = () => {
       <NavBar />
       <Flex>
         <Box w={'100%'} pt={8}>
-          {room?.playing ? <InGame /> : <Lobby room={room} />}
+          {!room ? (
+            <div>Loading</div>
+          ) : room.playing ? (
+            <InGame room={room} />
+          ) : (
+            <Lobby room={room} />
+          )}
         </Box>
         <Box h={'calc(100vh - 64px)'} w={'500px'} bg={'pink'}></Box>
       </Flex>

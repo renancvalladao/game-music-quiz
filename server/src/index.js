@@ -30,6 +30,7 @@ io.on('connection', (socket) => {
       host: socket.id,
       players: [],
       playing: false,
+      standings: [],
       config
     }
     rooms.push(room)
@@ -57,6 +58,17 @@ io.on('connection', (socket) => {
 
     callback(room)
     io.emit('room:joined', { roomId, playerId: socket.id })
+  })
+
+  socket.on('room:start', (roomId) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
+    }
+
+    room.playing = true
+    io.emit('room:started', roomId)
   })
 })
 

@@ -16,7 +16,7 @@ type StandingsProps = {
 
 export const Standings = ({ standings }: StandingsProps) => {
   return (
-    <Card h={'fit-content'} w={'48'} size={'sm'}>
+    <Card h={'fit-content'} w={'56'} size={'sm'}>
       <CardHeader>
         <Center>
           <Heading size="md">Standings</Heading>
@@ -24,7 +24,7 @@ export const Standings = ({ standings }: StandingsProps) => {
       </CardHeader>
       <CardBody>
         {standings.map((standing) => (
-          <Text>
+          <Text noOfLines={1}>
             {standing.score} {standing.name}
           </Text>
         ))}

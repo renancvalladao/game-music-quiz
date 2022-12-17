@@ -1,36 +1,30 @@
 import { AspectRatio, HStack, Image, Input, VStack } from '@chakra-ui/react'
+import { useState } from 'react'
 import { GameHeader } from './GameHeader'
 import { SongInfo } from './SongInfo'
 import { Standings } from './Standings'
 
-const STANDINGS = [
-  {
-    name: 'Renan',
-    score: 10
-  },
-  {
-    name: 'Cendon',
-    score: 8
-  },
-  {
-    name: 'Cadu',
-    score: 4
-  }
-]
+type InGameProps = {
+  room: Room
+}
 
-export const InGame = () => {
-  const totalSongs = 20
+export const InGame = ({ room }: InGameProps) => {
+  const [standings, setStandings] = useState(
+    room.players.map((player) => {
+      return { name: player, score: 0 }
+    })
+  )
   const playedSongs = 5
 
   return (
     <VStack spacing={'24px'}>
       <GameHeader
-        totalSongs={totalSongs}
+        totalSongs={room.config.songs}
         playedSongs={playedSongs}
         gameTitle={'Chrono Trigger'}
       />
       <HStack w={'100%'} justifyContent={'space-around'} alignItems={'start'}>
-        <Standings standings={STANDINGS} />
+        <Standings standings={standings} />
         <VStack>
           <AspectRatio w="520px" ratio={4 / 3}>
             <Image

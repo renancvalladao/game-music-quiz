@@ -9,7 +9,7 @@ import {
 
 export const SongInfo = () => {
   return (
-    <Card h={'fit-content'} w={'48'} size={'sm'} align={'center'}>
+    <Card h={'fit-content'} w={'56'} size={'sm'} align={'center'}>
       <CardHeader pb={0}>
         <Heading size="md">Song Info</Heading>
       </CardHeader>

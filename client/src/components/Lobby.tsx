@@ -4,18 +4,24 @@ import { SocketContext } from '../context/SocketContext'
 import { PlayerAvatar } from './PlayerAvatar'
 
 type LobbyProps = {
-  room: Room | null
+  room: Room
 }
 
 export const Lobby = ({ room }: LobbyProps) => {
   const socket = useContext(SocketContext)
   const [isReady, setIsReady] = useState(false)
-  const isHost = socket.id === room?.host
+  const isHost = socket.id === room.host
 
   return (
     <VStack px={64} spacing={8}>
       {isHost ? (
-        <Button colorScheme="green" size="lg" py={8} w={'180px'}>
+        <Button
+          onClick={() => socket.emit('room:start', room.id)}
+          colorScheme="green"
+          size="lg"
+          py={8}
+          w={'180px'}
+        >
           <Text fontSize={'2xl'}>Start</Text>
         </Button>
       ) : isReady ? (
@@ -44,7 +50,7 @@ export const Lobby = ({ room }: LobbyProps) => {
         templateColumns="repeat(auto-fill, minmax(272px, 1fr))"
         w={'100%'}
       >
-        {room?.players.map((player) => (
+        {room.players.map((player) => (
           <PlayerAvatar
             key={player}
             name={player}
