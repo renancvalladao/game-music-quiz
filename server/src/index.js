@@ -29,6 +29,7 @@ io.on('connection', (socket) => {
       name,
       host: socket.id,
       players: [],
+      playing: false,
       config
     }
     rooms.push(room)

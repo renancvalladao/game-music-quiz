@@ -3,6 +3,7 @@ type Room = {
   name: string
   host: string
   players: string[]
+  playing: boolean
   config: {
     songs: number
     guessTime: number
