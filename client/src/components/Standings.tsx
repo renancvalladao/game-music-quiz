@@ -24,7 +24,7 @@ export const Standings = ({ standings }: StandingsProps) => {
       </CardHeader>
       <CardBody>
         {standings.map((standing) => (
-          <Text noOfLines={1}>
+          <Text key={standing.name} noOfLines={1}>
             {standing.score} {standing.name}
           </Text>
         ))}
