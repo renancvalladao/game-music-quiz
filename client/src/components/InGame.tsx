@@ -46,6 +46,8 @@ export const InGame = ({ room }: InGameProps) => {
   const [canPlay, setCanPlay] = useState(false)
   const [answer, setAnswer] = useState('')
   const [countdown, setCountdown] = useState(0)
+  const [isCorrect, setIsCorrect] = useState(false)
+  const [showBorder, setShowBorder] = useState(false)
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
   const [standings, setStandings] = useState<{ name: string; score: number }[]>(
@@ -75,6 +77,8 @@ export const InGame = ({ room }: InGameProps) => {
     socket.on('game:checked', ({ song, correct, newStandings }) => {
       setSongDetails(song)
       setStandings(newStandings)
+      setIsCorrect(correct)
+      setShowBorder(true)
     })
 
     return () => {
@@ -124,6 +128,7 @@ export const InGame = ({ room }: InGameProps) => {
                 setGameState(State.PLAYING)
                 setAnswer('')
                 setSongDetails(EMPTY_SONG_DETAILS)
+                setShowBorder(false)
                 setTimeout(() => {
                   setCanPlay(false)
                   setGameState(State.ANSWERING)
@@ -149,7 +154,16 @@ export const InGame = ({ room }: InGameProps) => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 w={'90%'}
-              ></Input>
+                isInvalid={showBorder}
+                focusBorderColor={
+                  gameState === State.CHECKING
+                    ? isCorrect
+                      ? 'green.500'
+                      : 'red.500'
+                    : 'blue.500'
+                }
+                errorBorderColor={isCorrect ? 'green.500' : 'red.500'}
+              />
             </VStack>
             <SongInfo name={songDetails.name} composer={songDetails.composer} />
           </HStack>
