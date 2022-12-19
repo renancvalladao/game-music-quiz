@@ -3,7 +3,6 @@ import {
   Box,
   Heading,
   HStack,
-  Image,
   Input,
   useColorModeValue,
   VisuallyHidden,
@@ -49,12 +48,19 @@ export const InGame = ({ room }: InGameProps) => {
   const [countdown, setCountdown] = useState(0)
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
-  const [standings, setStandings] = useState(
-    room.players.map((player) => {
-      return { name: player.id, score: 0 }
-    })
+  const [standings, setStandings] = useState<{ name: string; score: number }[]>(
+    []
   )
+
   const playedSongs = 5
+
+  useEffect(() => {
+    setStandings(
+      room.players.map((player) => {
+        return { name: player.id, score: 0 }
+      })
+    )
+  }, [room])
 
   useEffect(() => {
     socket.on('game:url', (url) => {
@@ -66,9 +72,9 @@ export const InGame = ({ room }: InGameProps) => {
       setCanPlay(true)
     })
 
-    socket.on('game:checked', ({ song, correct }) => {
+    socket.on('game:checked', ({ song, correct, newStandings }) => {
       setSongDetails(song)
-      console.log(correct)
+      setStandings(newStandings)
     })
 
     return () => {
@@ -138,12 +144,6 @@ export const InGame = ({ room }: InGameProps) => {
                     {gameState === State.PLAYING ? countdown : 'Waiting...'}
                   </Heading>
                 </Box>
-                {/* <Image
-                  borderRadius="5px"
-                  src="https://i.pinimg.com/736x/01/80/4f/01804fbee0d38d7302214f9dd910bfec.jpg"
-                  alt="Chrono Trigger Cover"
-                  objectFit="cover"
-                /> */}
               </AspectRatio>
               <Input
                 value={answer}

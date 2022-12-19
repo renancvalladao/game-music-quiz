@@ -27,6 +27,7 @@ type Player = {
   ready: boolean
   buffered: boolean
   answered: boolean
+  score: number
 }
 
 type Game = {
@@ -100,7 +101,8 @@ io.on('connection', (socket) => {
         id: socket.id,
         ready: socket.id === room.host ? true : false,
         buffered: false,
-        answered: false
+        answered: false,
+        score: 0
       })
       callback(room)
       io.emit('room:joined', { roomId, playerId: socket.id })
@@ -183,20 +185,30 @@ io.on('connection', (socket) => {
       // TODO: ERROR
       return
     }
-    let correct
-    if (answer === room.song?.gameTitle) {
-      correct = true
-    } else {
-      correct = false
-    }
     const [player] = room.players.filter((p) => p.id === socket.id)
     if (!player) {
       // ERROR
     }
+    let correct
+    if (answer === room.song?.gameTitle) {
+      correct = true
+      player.score++
+    } else {
+      correct = false
+    }
     player.answered = true
     if (room.players.filter((p) => !p.answered).length === 0) {
       room.players.forEach((p) => (p.answered = false))
-      io.to(roomId).emit('game:checked', { song: room.song, correct })
+      io.to(roomId).emit('game:checked', {
+        song: room.song,
+        correct,
+        newStandings: room.players.map((player) => {
+          return {
+            name: player.id,
+            score: player.score
+          }
+        })
+      })
       setTimeout(() => {
         const { game, song } = getRandomSong(games)
         room.song = {
