@@ -1,8 +1,11 @@
 import {
   AspectRatio,
+  Box,
+  Heading,
   HStack,
   Image,
   Input,
+  useColorModeValue,
   VisuallyHidden,
   VStack
 } from '@chakra-ui/react'
@@ -19,8 +22,11 @@ type InGameProps = {
 
 export const InGame = ({ room }: InGameProps) => {
   const socket = useContext(SocketContext)
+  const bgColor = useColorModeValue('gray.100', 'gray.900')
   const [videoUrl, setVideoUrl] = useState('')
   const [canPlay, setCanPlay] = useState(false)
+  const [answer, setAnswer] = useState('')
+  const [countdown, setCountdown] = useState(0)
   const [standings, setStandings] = useState(
     room.players.map((player) => {
       return { name: player.id, score: 0 }
@@ -43,6 +49,17 @@ export const InGame = ({ room }: InGameProps) => {
     }
   }, [socket])
 
+  useEffect(() => {
+    let timer: NodeJS.Timer
+    if (countdown > 0) {
+      timer = setInterval(
+        () => setCountdown((prevCountDown) => prevCountDown - 1),
+        1000
+      )
+    }
+    return () => clearInterval(timer)
+  }, [countdown])
+
   return (
     <>
       {room.playing && (
@@ -60,6 +77,12 @@ export const InGame = ({ room }: InGameProps) => {
               onReady={() => {
                 socket.emit('game:buffered', room.id)
               }}
+              onStart={() => {
+                setTimeout(() => {
+                  setCanPlay(false)
+                }, (room.config.guessTime + 1) * 1000)
+                setCountdown(room.config.guessTime)
+              }}
             />
           </VisuallyHidden>
           <HStack
@@ -70,14 +93,21 @@ export const InGame = ({ room }: InGameProps) => {
             <Standings standings={standings} />
             <VStack>
               <AspectRatio w="520px" ratio={4 / 3}>
-                <Image
+                <Box bg={bgColor}>
+                  <Heading>{countdown}</Heading>
+                </Box>
+                {/* <Image
                   borderRadius="5px"
                   src="https://i.pinimg.com/736x/01/80/4f/01804fbee0d38d7302214f9dd910bfec.jpg"
                   alt="Chrono Trigger Cover"
                   objectFit="cover"
-                />
+                /> */}
               </AspectRatio>
-              <Input w={'90%'}></Input>
+              <Input
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                w={'90%'}
+              ></Input>
             </VStack>
             <SongInfo />
           </HStack>
