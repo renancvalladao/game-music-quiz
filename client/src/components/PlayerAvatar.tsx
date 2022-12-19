@@ -3,14 +3,15 @@ import { Avatar, Flex, Text, useColorModeValue } from '@chakra-ui/react'
 type PlayerAvatarProps = {
   name: string
   isHost: boolean
+  isReady: boolean
 }
 
-export const PlayerAvatar = ({ name, isHost }: PlayerAvatarProps) => {
+export const PlayerAvatar = ({ name, isHost, isReady }: PlayerAvatarProps) => {
   const hostBackgroundColor = useColorModeValue('blue.300', 'blue.700')
 
   return (
     <Flex>
-      <Avatar size={'xl'} />
+      <Avatar showBorder borderColor={isReady ? 'green.500' : ''} size={'xl'} />
       <Flex direction={'column'} justifyContent={isHost ? 'start' : 'center'}>
         {isHost && (
           <Flex

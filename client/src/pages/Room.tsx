@@ -20,8 +20,8 @@ export const Room = () => {
       setRoom((prevRoom) => {
         if (!prevRoom) return null
         if (prevRoom.id === roomId) {
-          if (!prevRoom.players.includes(playerId)) {
-            prevRoom.players.push(playerId)
+          if (!prevRoom.players.some((player) => player.id === playerId)) {
+            prevRoom.players.push({ id: playerId, ready: false })
           }
         }
 

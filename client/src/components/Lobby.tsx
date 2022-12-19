@@ -52,9 +52,10 @@ export const Lobby = ({ room }: LobbyProps) => {
       >
         {room.players.map((player) => (
           <PlayerAvatar
-            key={player}
-            name={player}
-            isHost={player === room.host}
+            key={player.id}
+            name={player.id}
+            isHost={player.id === room.host}
+            isReady={player.ready}
           />
         ))}
       </SimpleGrid>

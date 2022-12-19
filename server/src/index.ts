@@ -7,13 +7,18 @@ type Room = {
   id: string
   name: string
   host: string
-  players: string[]
+  players: Player[]
   playing: boolean
   config: {
     songs: number
     guessTime: number
     capacity: number
   }
+}
+
+type Player = {
+  id: string
+  ready: boolean
 }
 
 const PORT = 3001
@@ -62,10 +67,13 @@ io.on('connection', (socket) => {
       // TODO: FULL
       return
     }
-
-    if (!room.players.includes(socket.id)) {
+    const [player] = room.players.filter((p) => p.id === socket.id)
+    if (!player) {
       socket.join(roomId)
-      room.players.push(socket.id)
+      room.players.push({
+        id: socket.id,
+        ready: socket.id === room.host ? true : false
+      })
     }
 
     callback(room)

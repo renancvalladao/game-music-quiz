@@ -34,8 +34,8 @@ export const Rooms = () => {
       setRooms((prevRooms) => {
         prevRooms.forEach((room) => {
           if (room.id === roomId) {
-            if (!room.players.includes(playerId)) {
-              room.players.push(playerId)
+            if (!room.players.some((player) => player.id === playerId)) {
+              room.players.push({ id: playerId, ready: false })
             }
           }
         })

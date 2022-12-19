@@ -17,7 +17,7 @@ type RoomCardProps = {
   id: string
   name: string
   host: string
-  players: string[]
+  players: Player[]
   config: {
     songs: number
     guessTime: number

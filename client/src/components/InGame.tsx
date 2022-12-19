@@ -11,7 +11,7 @@ type InGameProps = {
 export const InGame = ({ room }: InGameProps) => {
   const [standings, setStandings] = useState(
     room.players.map((player) => {
-      return { name: player, score: 0 }
+      return { name: player.id, score: 0 }
     })
   )
   const playedSongs = 5
