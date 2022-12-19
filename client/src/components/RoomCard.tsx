@@ -1,5 +1,6 @@
 import { RepeatIcon, TimeIcon } from '@chakra-ui/icons'
 import {
+  Badge,
   Button,
   Card,
   CardBody,
@@ -42,6 +43,13 @@ export const RoomCard = ({
       <CardHeader>
         <Heading size="md">{name}</Heading>
         <Text>Host: {host}</Text>
+        {playing ? (
+          <Badge colorScheme="purple">Playing</Badge>
+        ) : isFull ? (
+          <Badge colorScheme="red">Full</Badge>
+        ) : (
+          <Badge colorScheme="green">Open</Badge>
+        )}
       </CardHeader>
       <CardBody>
         <Progress
