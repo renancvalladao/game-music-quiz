@@ -16,17 +16,39 @@ import { GameHeader } from './GameHeader'
 import { SongInfo } from './SongInfo'
 import { Standings } from './Standings'
 
+enum State {
+  BUFFERING,
+  PLAYING,
+  ANSWERING,
+  CHECKING
+}
+
+type SongDetails = {
+  gameTitle: string
+  name: string
+  composer: string
+}
+
 type InGameProps = {
   room: Room
+}
+
+const EMPTY_SONG_DETAILS = {
+  gameTitle: '?',
+  name: '?',
+  composer: '?'
 }
 
 export const InGame = ({ room }: InGameProps) => {
   const socket = useContext(SocketContext)
   const bgColor = useColorModeValue('gray.100', 'gray.900')
+  const [gameState, setGameState] = useState<State>()
   const [videoUrl, setVideoUrl] = useState('')
   const [canPlay, setCanPlay] = useState(false)
   const [answer, setAnswer] = useState('')
   const [countdown, setCountdown] = useState(0)
+  const [songDetails, setSongDetails] =
+    useState<SongDetails>(EMPTY_SONG_DETAILS)
   const [standings, setStandings] = useState(
     room.players.map((player) => {
       return { name: player.id, score: 0 }
@@ -36,6 +58,7 @@ export const InGame = ({ room }: InGameProps) => {
 
   useEffect(() => {
     socket.on('game:url', (url) => {
+      setGameState(State.BUFFERING)
       setVideoUrl(url)
     })
 
@@ -43,11 +66,24 @@ export const InGame = ({ room }: InGameProps) => {
       setCanPlay(true)
     })
 
+    socket.on('game:checked', ({ song, correct }) => {
+      setSongDetails(song)
+      console.log(correct)
+    })
+
     return () => {
       socket.off('game:url')
       socket.off('game:play')
+      socket.off('game:checked')
     }
   }, [socket])
+
+  useEffect(() => {
+    if (gameState === State.ANSWERING) {
+      socket.emit('game:answer', room.id, answer)
+      setGameState(State.CHECKING)
+    }
+  }, [gameState, answer, socket, room.id])
 
   useEffect(() => {
     let timer: NodeJS.Timer
@@ -67,7 +103,7 @@ export const InGame = ({ room }: InGameProps) => {
           <GameHeader
             totalSongs={room.config.songs}
             playedSongs={playedSongs}
-            gameTitle={'Chrono Trigger'}
+            gameTitle={songDetails.gameTitle}
           />
           <VisuallyHidden>
             <ReactPlayer
@@ -78,10 +114,14 @@ export const InGame = ({ room }: InGameProps) => {
                 socket.emit('game:buffered', room.id)
               }}
               onStart={() => {
+                setCountdown(room.config.guessTime)
+                setGameState(State.PLAYING)
+                setAnswer('')
+                setSongDetails(EMPTY_SONG_DETAILS)
                 setTimeout(() => {
                   setCanPlay(false)
+                  setGameState(State.ANSWERING)
                 }, (room.config.guessTime + 1) * 1000)
-                setCountdown(room.config.guessTime)
               }}
             />
           </VisuallyHidden>
@@ -94,7 +134,9 @@ export const InGame = ({ room }: InGameProps) => {
             <VStack>
               <AspectRatio w="520px" ratio={4 / 3}>
                 <Box bg={bgColor}>
-                  <Heading>{countdown}</Heading>
+                  <Heading>
+                    {gameState === State.PLAYING ? countdown : 'Waiting...'}
+                  </Heading>
                 </Box>
                 {/* <Image
                   borderRadius="5px"
@@ -109,7 +151,7 @@ export const InGame = ({ room }: InGameProps) => {
                 w={'90%'}
               ></Input>
             </VStack>
-            <SongInfo />
+            <SongInfo name={songDetails.name} composer={songDetails.composer} />
           </HStack>
         </VStack>
       )}

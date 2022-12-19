@@ -7,7 +7,12 @@ import {
   Text
 } from '@chakra-ui/react'
 
-export const SongInfo = () => {
+type SongInfoProps = {
+  name: string
+  composer: string
+}
+
+export const SongInfo = ({ name, composer }: SongInfoProps) => {
   return (
     <Card h={'fit-content'} w={'56'} size={'sm'} align={'center'}>
       <CardHeader pb={0}>
@@ -16,9 +21,9 @@ export const SongInfo = () => {
       <CardBody>
         <Stack alignItems={'center'}>
           <Heading size="sm">Name</Heading>
-          <Text fontSize={'sm'}>The Secret of The Forest</Text>
+          <Text fontSize={'sm'}>{name}</Text>
           <Heading size="sm">Composer</Heading>
-          <Text fontSize={'sm'}>Yasunori Mitsuda</Text>
+          <Text fontSize={'sm'}>{composer}</Text>
         </Stack>
       </CardBody>
     </Card>

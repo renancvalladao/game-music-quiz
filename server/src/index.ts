@@ -15,12 +15,18 @@ type Room = {
     guessTime: number
     capacity: number
   }
+  song?: {
+    gameTitle: string
+    name: string
+    composer: string
+  }
 }
 
 type Player = {
   id: string
   ready: boolean
   buffered: boolean
+  answered: boolean
 }
 
 type Game = {
@@ -93,7 +99,8 @@ io.on('connection', (socket) => {
       room.players.push({
         id: socket.id,
         ready: socket.id === room.host ? true : false,
-        buffered: false
+        buffered: false,
+        answered: false
       })
       callback(room)
       io.emit('room:joined', { roomId, playerId: socket.id })
@@ -143,6 +150,11 @@ io.on('connection', (socket) => {
       room.playing = true
       io.emit('room:started', roomId)
       const { game, song } = getRandomSong(games)
+      room.song = {
+        gameTitle: game.title,
+        composer: game.composer,
+        name: song.name
+      }
       io.to(roomId).emit('game:url', song.url)
     }
   })
@@ -162,6 +174,38 @@ io.on('connection', (socket) => {
     if (room.players.filter((p) => !p.buffered).length === 0) {
       room.players.forEach((p) => (p.buffered = false))
       io.to(roomId).emit('game:play')
+    }
+  })
+
+  socket.on('game:answer', (roomId, answer) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
+    }
+    let correct
+    if (answer === room.song?.gameTitle) {
+      correct = true
+    } else {
+      correct = false
+    }
+    const [player] = room.players.filter((p) => p.id === socket.id)
+    if (!player) {
+      // ERROR
+    }
+    player.answered = true
+    if (room.players.filter((p) => !p.answered).length === 0) {
+      room.players.forEach((p) => (p.answered = false))
+      io.to(roomId).emit('game:checked', { song: room.song, correct })
+      setTimeout(() => {
+        const { game, song } = getRandomSong(games)
+        room.song = {
+          gameTitle: game.title,
+          composer: game.composer,
+          name: song.name
+        }
+        io.to(roomId).emit('game:url', song.url)
+      }, 5 * 1000)
     }
   })
 })
