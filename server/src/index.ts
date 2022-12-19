@@ -90,6 +90,11 @@ io.on('connection', (socket) => {
       return
     }
 
+    if (room.playing) {
+      // TODO: ALREADY PLAYING
+      return
+    }
+
     if (room.config.capacity === room.players.length) {
       // TODO: FULL
       return

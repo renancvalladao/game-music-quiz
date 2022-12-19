@@ -18,6 +18,7 @@ type RoomCardProps = {
   name: string
   host: string
   players: Player[]
+  playing: boolean
   config: {
     songs: number
     guessTime: number
@@ -30,6 +31,7 @@ export const RoomCard = ({
   name,
   host,
   players,
+  playing,
   config
 }: RoomCardProps) => {
   const navigate = useNavigate()
@@ -68,7 +70,10 @@ export const RoomCard = ({
             </Flex>
           </Tooltip>
         </Flex>
-        <Button onClick={() => navigate(`/room/${id}`)} isDisabled={isFull}>
+        <Button
+          onClick={() => navigate(`/room/${id}`)}
+          isDisabled={isFull || playing}
+        >
           Join
         </Button>
       </CardFooter>
