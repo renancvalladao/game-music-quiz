@@ -117,7 +117,7 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
                 isValidCharacter={(value) => Number.isInteger(+value)}
                 defaultValue={20}
                 min={10}
-                max={60}
+                max={30}
               >
                 <NumberInputField />
                 <NumberInputStepper>
