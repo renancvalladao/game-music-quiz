@@ -67,6 +67,8 @@ export const Room = () => {
     return () => {
       socket.off('room:joined')
       socket.off('room:started')
+      socket.off('player:ready')
+      socket.off('player:unready')
     }
   }, [socket, roomId])
 
@@ -77,10 +79,11 @@ export const Room = () => {
         <Box w={'100%'} pt={8}>
           {!room ? (
             <div>Loading</div>
-          ) : room.playing ? (
-            <InGame room={room} />
           ) : (
-            <Lobby room={room} />
+            <>
+              <InGame room={room} />
+              <Lobby room={room} />
+            </>
           )}
         </Box>
         <Box h={'calc(100vh - 64px)'} w={'500px'} bg={'pink'}></Box>

@@ -2,6 +2,7 @@ import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
 import { randomUUID } from 'crypto'
+import games from './games'
 
 type Room = {
   id: string
@@ -19,6 +20,18 @@ type Room = {
 type Player = {
   id: string
   ready: boolean
+  buffered: boolean
+}
+
+type Game = {
+  details: {
+    title: string
+    composer: string
+  }
+  songs: {
+    name: string
+    url: string
+  }[]
 }
 
 const PORT = 3001
@@ -32,6 +45,12 @@ const io = new Server(server, {
 })
 
 const rooms: Room[] = []
+
+const getRandomSong = (games: Game[]) => {
+  const game = games[Math.floor(Math.random() * games.length)]
+  const song = game.songs[Math.floor(Math.random() * game.songs.length)]
+  return { game: game.details, song }
+}
 
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`)
@@ -57,6 +76,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('room:join', (roomId, callback) => {
+    // TODO: can get room from socket
     const [room] = rooms.filter((room) => room.id === roomId)
     if (!room) {
       // TODO: ERROR
@@ -72,7 +92,8 @@ io.on('connection', (socket) => {
       socket.join(roomId)
       room.players.push({
         id: socket.id,
-        ready: socket.id === room.host ? true : false
+        ready: socket.id === room.host ? true : false,
+        buffered: false
       })
       callback(room)
       io.emit('room:joined', { roomId, playerId: socket.id })
@@ -118,9 +139,29 @@ io.on('connection', (socket) => {
       return
     }
 
-    if (room.players.filter((p) => !p.ready).length === 0) {
+    if (room.players.filter((p) => !p.ready).length === 0 && !room.playing) {
       room.playing = true
       io.emit('room:started', roomId)
+      const { game, song } = getRandomSong(games)
+      io.to(roomId).emit('game:url', song.url)
+    }
+  })
+
+  socket.on('game:buffered', (roomId) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
+    }
+
+    const [player] = room.players.filter((p) => p.id === socket.id)
+    if (!player) {
+      // ERROR
+    }
+    player.buffered = true
+    if (room.players.filter((p) => !p.buffered).length === 0) {
+      room.players.forEach((p) => (p.buffered = false))
+      io.to(roomId).emit('game:play')
     }
   })
 })

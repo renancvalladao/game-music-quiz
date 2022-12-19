@@ -13,52 +13,56 @@ export const Lobby = ({ room }: LobbyProps) => {
   const isHost = socket.id === room.host
 
   return (
-    <VStack px={64} spacing={8}>
-      {isHost ? (
-        <Button
-          onClick={() => socket.emit('room:start', room.id)}
-          colorScheme="green"
-          size="lg"
-          py={8}
-          w={'180px'}
-        >
-          <Text fontSize={'2xl'}>Start</Text>
-        </Button>
-      ) : isReady ? (
-        <Button
-          onClick={() => socket.emit('room:unready', room.id)}
-          colorScheme="red"
-          size="lg"
-          py={8}
-          w={'180px'}
-        >
-          <Text fontSize={'2xl'}>Unready</Text>
-        </Button>
-      ) : (
-        <Button
-          onClick={() => socket.emit('room:ready', room.id)}
-          colorScheme="green"
-          size="lg"
-          py={8}
-          w={'180px'}
-        >
-          <Text fontSize={'2xl'}>Ready</Text>
-        </Button>
+    <>
+      {!room.playing && (
+        <VStack px={64} spacing={8}>
+          {isHost ? (
+            <Button
+              onClick={() => socket.emit('room:start', room.id)}
+              colorScheme="green"
+              size="lg"
+              py={8}
+              w={'180px'}
+            >
+              <Text fontSize={'2xl'}>Start</Text>
+            </Button>
+          ) : isReady ? (
+            <Button
+              onClick={() => socket.emit('room:unready', room.id)}
+              colorScheme="red"
+              size="lg"
+              py={8}
+              w={'180px'}
+            >
+              <Text fontSize={'2xl'}>Unready</Text>
+            </Button>
+          ) : (
+            <Button
+              onClick={() => socket.emit('room:ready', room.id)}
+              colorScheme="green"
+              size="lg"
+              py={8}
+              w={'180px'}
+            >
+              <Text fontSize={'2xl'}>Ready</Text>
+            </Button>
+          )}
+          <SimpleGrid
+            spacing={6}
+            templateColumns="repeat(auto-fill, minmax(272px, 1fr))"
+            w={'100%'}
+          >
+            {room.players.map((player) => (
+              <PlayerAvatar
+                key={player.id}
+                name={player.id}
+                isHost={player.id === room.host}
+                isReady={player.ready}
+              />
+            ))}
+          </SimpleGrid>
+        </VStack>
       )}
-      <SimpleGrid
-        spacing={6}
-        templateColumns="repeat(auto-fill, minmax(272px, 1fr))"
-        w={'100%'}
-      >
-        {room.players.map((player) => (
-          <PlayerAvatar
-            key={player.id}
-            name={player.id}
-            isHost={player.id === room.host}
-            isReady={player.ready}
-          />
-        ))}
-      </SimpleGrid>
-    </VStack>
+    </>
   )
 }
