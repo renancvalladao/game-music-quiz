@@ -40,6 +40,30 @@ export const Room = () => {
       })
     })
 
+    socket.on('player:ready', (playerId) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        if (prevRoom.id === roomId) {
+          const [player] = prevRoom.players.filter((p) => p.id === playerId)
+          player.ready = true
+        }
+
+        return { ...prevRoom }
+      })
+    })
+
+    socket.on('player:unready', (playerId) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        if (prevRoom.id === roomId) {
+          const [player] = prevRoom.players.filter((p) => p.id === playerId)
+          player.ready = false
+        }
+
+        return { ...prevRoom }
+      })
+    })
+
     return () => {
       socket.off('room:joined')
       socket.off('room:started')

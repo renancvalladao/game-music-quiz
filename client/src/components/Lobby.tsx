@@ -1,5 +1,5 @@
 import { Button, SimpleGrid, Text, VStack } from '@chakra-ui/react'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { SocketContext } from '../context/SocketContext'
 import { PlayerAvatar } from './PlayerAvatar'
 
@@ -9,7 +9,7 @@ type LobbyProps = {
 
 export const Lobby = ({ room }: LobbyProps) => {
   const socket = useContext(SocketContext)
-  const [isReady, setIsReady] = useState(false)
+  const isReady = room.players.filter((p) => p.id === socket.id)[0].ready
   const isHost = socket.id === room.host
 
   return (
@@ -26,7 +26,7 @@ export const Lobby = ({ room }: LobbyProps) => {
         </Button>
       ) : isReady ? (
         <Button
-          onClick={() => setIsReady(false)}
+          onClick={() => socket.emit('room:unready', room.id)}
           colorScheme="red"
           size="lg"
           py={8}
@@ -36,7 +36,7 @@ export const Lobby = ({ room }: LobbyProps) => {
         </Button>
       ) : (
         <Button
-          onClick={() => setIsReady(true)}
+          onClick={() => socket.emit('room:ready', room.id)}
           colorScheme="green"
           size="lg"
           py={8}

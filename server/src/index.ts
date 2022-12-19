@@ -74,10 +74,41 @@ io.on('connection', (socket) => {
         id: socket.id,
         ready: socket.id === room.host ? true : false
       })
+      callback(room)
+      io.emit('room:joined', { roomId, playerId: socket.id })
+    }
+  })
+
+  socket.on('room:ready', (roomId) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
     }
 
-    callback(room)
-    io.emit('room:joined', { roomId, playerId: socket.id })
+    const [player] = room.players.filter((p) => p.id === socket.id)
+    if (!player) {
+      // ERROR
+    }
+
+    player.ready = true
+    io.to(roomId).emit('player:ready', socket.id)
+  })
+
+  socket.on('room:unready', (roomId) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
+    }
+
+    const [player] = room.players.filter((p) => p.id === socket.id)
+    if (!player) {
+      // ERROR
+    }
+
+    player.ready = false
+    io.to(roomId).emit('player:unready', socket.id)
   })
 
   socket.on('room:start', (roomId) => {
@@ -87,8 +118,10 @@ io.on('connection', (socket) => {
       return
     }
 
-    room.playing = true
-    io.emit('room:started', roomId)
+    if (room.players.filter((p) => !p.ready).length === 0) {
+      room.playing = true
+      io.emit('room:started', roomId)
+    }
   })
 })
 
