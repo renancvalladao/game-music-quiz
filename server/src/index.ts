@@ -10,6 +10,7 @@ type Room = {
   host: string
   players: Player[]
   playing: boolean
+  round: number
   config: {
     songs: number
     guessTime: number
@@ -74,6 +75,7 @@ io.on('connection', (socket) => {
       host: socket.id,
       players: [],
       playing: false,
+      round: 0,
       config
     }
     rooms.push(room)
@@ -156,6 +158,7 @@ io.on('connection', (socket) => {
     if (room.players.filter((p) => !p.ready).length === 0 && !room.playing) {
       room.playing = true
       io.emit('room:started', roomId)
+      room.round++
       const { game, song } = getRandomSong(games)
       room.song = {
         gameTitle: game.title,
@@ -214,15 +217,20 @@ io.on('connection', (socket) => {
           }
         })
       })
-      setTimeout(() => {
-        const { game, song } = getRandomSong(games)
-        room.song = {
-          gameTitle: game.title,
-          composer: game.composer,
-          name: song.name
-        }
-        io.to(roomId).emit('game:url', song.url)
-      }, 5 * 1000)
+      if (room.round === room.config.songs) {
+        io.to(roomId).emit('game:finished')
+      } else {
+        setTimeout(() => {
+          room.round++
+          const { game, song } = getRandomSong(games)
+          room.song = {
+            gameTitle: game.title,
+            composer: game.composer,
+            name: song.name
+          }
+          io.to(roomId).emit('game:url', song.url)
+        }, 5 * 1000)
+      }
     }
   })
 })

@@ -19,7 +19,8 @@ enum State {
   BUFFERING,
   PLAYING,
   ANSWERING,
-  CHECKING
+  CHECKING,
+  FINISHED
 }
 
 type SongDetails = {
@@ -48,13 +49,12 @@ export const InGame = ({ room }: InGameProps) => {
   const [countdown, setCountdown] = useState(0)
   const [isCorrect, setIsCorrect] = useState(false)
   const [showBorder, setShowBorder] = useState(false)
+  const [round, setRound] = useState(0)
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
   const [standings, setStandings] = useState<{ name: string; score: number }[]>(
     []
   )
-
-  const playedSongs = 5
 
   useEffect(() => {
     setStandings(
@@ -81,10 +81,15 @@ export const InGame = ({ room }: InGameProps) => {
       setShowBorder(true)
     })
 
+    socket.on('game:finished', () => {
+      setGameState(State.FINISHED)
+    })
+
     return () => {
       socket.off('game:url')
       socket.off('game:play')
       socket.off('game:checked')
+      socket.off('game:finished')
     }
   }, [socket])
 
@@ -112,7 +117,7 @@ export const InGame = ({ room }: InGameProps) => {
         <VStack spacing={'24px'}>
           <GameHeader
             totalSongs={room.config.songs}
-            playedSongs={playedSongs}
+            playedSongs={round}
             gameTitle={songDetails.gameTitle}
           />
           <VisuallyHidden>
@@ -129,6 +134,7 @@ export const InGame = ({ room }: InGameProps) => {
                 setAnswer('')
                 setSongDetails(EMPTY_SONG_DETAILS)
                 setShowBorder(false)
+                setRound((prevRound) => prevRound + 1)
                 setTimeout(() => {
                   setCanPlay(false)
                   setGameState(State.ANSWERING)
@@ -146,7 +152,11 @@ export const InGame = ({ room }: InGameProps) => {
               <AspectRatio w="520px" ratio={4 / 3}>
                 <Box bg={bgColor}>
                   <Heading>
-                    {gameState === State.PLAYING ? countdown : 'Waiting...'}
+                    {gameState === State.PLAYING
+                      ? countdown
+                      : gameState === State.FINISHED
+                      ? 'Finished'
+                      : 'Waiting...'}
                   </Heading>
                 </Box>
               </AspectRatio>
