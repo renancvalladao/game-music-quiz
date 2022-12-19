@@ -195,7 +195,7 @@ io.on('connection', (socket) => {
       // ERROR
     }
     let correct
-    if (answer === room.song?.gameTitle) {
+    if (answer.toLowerCase() === room.song?.gameTitle.toLowerCase()) {
       correct = true
       player.score++
     } else {
