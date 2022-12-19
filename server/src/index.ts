@@ -205,11 +205,11 @@ io.on('connection', (socket) => {
       correct = false
     }
     player.answered = true
+    socket.emit('game:checked', correct)
     if (room.players.filter((p) => !p.answered).length === 0) {
       room.players.forEach((p) => (p.answered = false))
-      io.to(roomId).emit('game:checked', {
+      io.to(roomId).emit('game:details', {
         song: room.song,
-        correct,
         newStandings: room.players.map((player) => {
           return {
             name: player.id,

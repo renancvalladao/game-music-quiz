@@ -74,10 +74,13 @@ export const InGame = ({ room }: InGameProps) => {
       setCanPlay(true)
     })
 
-    socket.on('game:checked', ({ song, correct, newStandings }) => {
+    socket.on('game:checked', (correct) => {
+      setIsCorrect(correct)
+    })
+
+    socket.on('game:details', ({ song, newStandings }) => {
       setSongDetails(song)
       setStandings(newStandings)
-      setIsCorrect(correct)
       setShowBorder(true)
     })
 
