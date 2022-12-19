@@ -1,7 +1,20 @@
-const express = require('express')
-const http = require('http')
-const { Server } = require('socket.io')
-const { randomUUID } = require('crypto')
+import express from 'express'
+import http from 'http'
+import { Server } from 'socket.io'
+import { randomUUID } from 'crypto'
+
+type Room = {
+  id: string
+  name: string
+  host: string
+  players: string[]
+  playing: boolean
+  config: {
+    songs: number
+    guessTime: number
+    capacity: number
+  }
+}
 
 const PORT = 3001
 
@@ -13,7 +26,7 @@ const io = new Server(server, {
   }
 })
 
-const rooms = []
+const rooms: Room[] = []
 
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`)
@@ -30,7 +43,6 @@ io.on('connection', (socket) => {
       host: socket.id,
       players: [],
       playing: false,
-      standings: [],
       config
     }
     rooms.push(room)
