@@ -1,9 +1,14 @@
 import {
   AspectRatio,
   Box,
+  Flex,
   Heading,
   HStack,
   Input,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
   useColorModeValue,
   VisuallyHidden,
   VStack
@@ -50,6 +55,7 @@ export const InGame = ({ room }: InGameProps) => {
   const [isCorrect, setIsCorrect] = useState(false)
   const [showBorder, setShowBorder] = useState(false)
   const [round, setRound] = useState(0)
+  const [volume, setVolume] = useState(10)
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
   const [standings, setStandings] = useState<{ name: string; score: number }[]>(
@@ -118,6 +124,20 @@ export const InGame = ({ room }: InGameProps) => {
     <>
       {room.playing && (
         <VStack spacing={'24px'}>
+          <Flex w={'95%'} justifyContent={'end'}>
+            <Slider
+              w={'32'}
+              value={volume}
+              onChange={(value) => {
+                setVolume(value)
+              }}
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+          </Flex>
           <GameHeader
             totalSongs={room.config.songs}
             playedSongs={round}
@@ -126,7 +146,7 @@ export const InGame = ({ room }: InGameProps) => {
           <VisuallyHidden>
             <ReactPlayer
               url={videoUrl}
-              volume={0.1}
+              volume={volume / 100}
               playing={canPlay}
               onReady={() => {
                 socket.emit('game:buffered', room.id)
