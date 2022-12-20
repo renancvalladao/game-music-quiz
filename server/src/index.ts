@@ -78,7 +78,7 @@ io.on('connection', (socket) => {
       round: 0,
       config
     }
-    rooms.push(room)
+    rooms.unshift(room)
 
     io.emit('room:created', room)
     callback(roomId)

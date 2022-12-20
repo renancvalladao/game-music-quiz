@@ -27,7 +27,7 @@ export const Rooms = () => {
     })
 
     socket.on('room:created', (room: Room) => {
-      setRooms((prevRooms) => [...prevRooms, room])
+      setRooms((prevRooms) => [room, ...prevRooms])
     })
 
     socket.on('room:joined', ({ roomId, playerId }) => {
