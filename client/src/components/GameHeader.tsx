@@ -12,7 +12,7 @@ export const GameHeader = ({
   gameTitle
 }: GameHeaderProps) => {
   return (
-    <Card h={'fit-content'} w={'64'} size={'sm'} align={'center'}>
+    <Card h={'fit-content'} minW={'64'} size={'sm'} align={'center'}>
       <CardHeader>
         <VStack>
           <Heading size="md">
