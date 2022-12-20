@@ -210,12 +210,14 @@ io.on('connection', (socket) => {
       room.players.forEach((p) => (p.answered = false))
       io.to(roomId).emit('game:details', {
         song: room.song,
-        newStandings: room.players.map((player) => {
-          return {
-            name: player.id,
-            score: player.score
-          }
-        })
+        newStandings: room.players
+          .sort((p1, p2) => p2.score - p1.score)
+          .map((player) => {
+            return {
+              name: player.id,
+              score: player.score
+            }
+          })
       })
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
