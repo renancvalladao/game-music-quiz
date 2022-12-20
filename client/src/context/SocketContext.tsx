@@ -5,7 +5,7 @@ type SocketContextProps = {
   children: React.ReactNode
 }
 
-const socket = io('http://localhost:3001')
+const socket = io(process.env.SERVER || 'http://localhost:3001')
 
 export const SocketContext = createContext<Socket>(socket)
 
