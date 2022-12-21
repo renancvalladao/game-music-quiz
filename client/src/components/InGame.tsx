@@ -13,7 +13,7 @@ import {
   VisuallyHidden,
   VStack
 } from '@chakra-ui/react'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player/youtube'
 import { SocketContext } from '../context/SocketContext'
 import { GameHeader } from './GameHeader'
@@ -45,6 +45,7 @@ const EMPTY_SONG_DETAILS = {
 }
 
 export const InGame = ({ room }: InGameProps) => {
+  const videoRef = useRef<ReactPlayer>(null)
   const socket = useContext(SocketContext)
   const bgColor = useColorModeValue('gray.100', 'gray.900')
   const [gameState, setGameState] = useState<State>()
@@ -56,6 +57,7 @@ export const InGame = ({ room }: InGameProps) => {
   const [showBorder, setShowBorder] = useState(false)
   const [round, setRound] = useState(0)
   const [volume, setVolume] = useState(10)
+  const [seekTo, setSeekTo] = useState(0)
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
   const [standings, setStandings] = useState<{ name: string; score: number }[]>(
@@ -71,9 +73,10 @@ export const InGame = ({ room }: InGameProps) => {
   }, [room])
 
   useEffect(() => {
-    socket.on('game:url', (url) => {
+    socket.on('game:song', (url, seek) => {
       setGameState(State.BUFFERING)
       setVideoUrl(url)
+      setSeekTo(seek)
     })
 
     socket.on('game:play', () => {
@@ -95,7 +98,7 @@ export const InGame = ({ room }: InGameProps) => {
     })
 
     return () => {
-      socket.off('game:url')
+      socket.off('game:song')
       socket.off('game:play')
       socket.off('game:checked')
       socket.off('game:details')
@@ -146,10 +149,12 @@ export const InGame = ({ room }: InGameProps) => {
           />
           <VisuallyHidden>
             <ReactPlayer
+              ref={videoRef}
               url={videoUrl}
               volume={volume / 100}
               playing={canPlay}
               onReady={() => {
+                videoRef.current?.seekTo(seekTo)
                 socket.emit('game:buffered', room.id)
               }}
               onStart={() => {

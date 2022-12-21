@@ -43,6 +43,7 @@ type Game = {
 }
 
 const PORT = process.env.PORT || 3001
+const SONG_PARTS = 3
 
 const app = express()
 const server = http.createServer(app)
@@ -178,7 +179,8 @@ io.on('connection', (socket) => {
         composer: game.composer,
         name: song.name
       }
-      io.to(roomId).emit('game:url', song.url)
+      const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
+      io.to(roomId).emit('game:song', song.url, seek)
     }
   })
 
@@ -245,7 +247,8 @@ io.on('connection', (socket) => {
             composer: game.composer,
             name: song.name
           }
-          io.to(roomId).emit('game:url', song.url)
+          const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
+          io.to(roomId).emit('game:song', song.url, seek)
           clearTimeout(timeout)
         }, 5 * 1000)
       }
