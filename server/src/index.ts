@@ -125,7 +125,8 @@ io.on('connection', (socket) => {
 
     const [player] = room.players.filter((p) => p.id === socket.id)
     if (!player) {
-      // ERROR
+      // TODO: ERROR
+      return
     }
 
     player.ready = true
@@ -141,7 +142,8 @@ io.on('connection', (socket) => {
 
     const [player] = room.players.filter((p) => p.id === socket.id)
     if (!player) {
-      // ERROR
+      // TODO: ERROR
+      return
     }
 
     player.ready = false
@@ -178,7 +180,8 @@ io.on('connection', (socket) => {
 
     const [player] = room.players.filter((p) => p.id === socket.id)
     if (!player) {
-      // ERROR
+      // TODO: ERROR
+      return
     }
     player.buffered = true
     if (room.players.filter((p) => !p.buffered).length === 0) {
@@ -195,7 +198,8 @@ io.on('connection', (socket) => {
     }
     const [player] = room.players.filter((p) => p.id === socket.id)
     if (!player) {
-      // ERROR
+      // TODO: ERROR
+      return
     }
     let correct
     if (answer.toLowerCase() === room.song?.gameTitle.toLowerCase()) {
