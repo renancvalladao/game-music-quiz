@@ -62,6 +62,17 @@ const getRandomSong = (games: Game[]) => {
 
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`)
+  let playerId = socket.handshake.auth.playerId
+  if (!playerId) {
+    playerId = randomUUID()
+    socket.emit('player:id', playerId)
+  }
+
+  rooms.forEach((room) => {
+    if (room.players.some((p) => p.id === playerId)) {
+      socket.join(room.id)
+    }
+  })
 
   socket.on('room:list', (callback) => {
     callback({ data: rooms })
@@ -72,7 +83,7 @@ io.on('connection', (socket) => {
     const room = {
       id: roomId,
       name,
-      host: socket.id,
+      host: playerId,
       players: [],
       playing: false,
       round: 0,
@@ -101,18 +112,18 @@ io.on('connection', (socket) => {
       // TODO: FULL
       return
     }
-    const [player] = room.players.filter((p) => p.id === socket.id)
+    const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
       socket.join(roomId)
       room.players.push({
-        id: socket.id,
-        ready: socket.id === room.host ? true : false,
+        id: playerId,
+        ready: playerId === room.host ? true : false,
         buffered: false,
         answered: false,
         score: 0
       })
       callback(room)
-      io.emit('room:joined', { roomId, playerId: socket.id })
+      io.emit('room:joined', { roomId, playerId })
     }
   })
 
@@ -123,14 +134,14 @@ io.on('connection', (socket) => {
       return
     }
 
-    const [player] = room.players.filter((p) => p.id === socket.id)
+    const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
       // TODO: ERROR
       return
     }
 
     player.ready = true
-    io.to(roomId).emit('player:ready', socket.id)
+    io.to(roomId).emit('player:ready', playerId)
   })
 
   socket.on('room:unready', (roomId) => {
@@ -140,14 +151,14 @@ io.on('connection', (socket) => {
       return
     }
 
-    const [player] = room.players.filter((p) => p.id === socket.id)
+    const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
       // TODO: ERROR
       return
     }
 
     player.ready = false
-    io.to(roomId).emit('player:unready', socket.id)
+    io.to(roomId).emit('player:unready', playerId)
   })
 
   socket.on('room:start', (roomId) => {
@@ -178,7 +189,7 @@ io.on('connection', (socket) => {
       return
     }
 
-    const [player] = room.players.filter((p) => p.id === socket.id)
+    const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
       // TODO: ERROR
       return
@@ -196,7 +207,7 @@ io.on('connection', (socket) => {
       // TODO: ERROR
       return
     }
-    const [player] = room.players.filter((p) => p.id === socket.id)
+    const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
       // TODO: ERROR
       return
@@ -226,7 +237,7 @@ io.on('connection', (socket) => {
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
       } else {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
           room.round++
           const { game, song } = getRandomSong(games)
           room.song = {
@@ -235,6 +246,7 @@ io.on('connection', (socket) => {
             name: song.name
           }
           io.to(roomId).emit('game:url', song.url)
+          clearTimeout(timeout)
         }, 5 * 1000)
       }
     }

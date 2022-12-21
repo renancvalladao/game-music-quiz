@@ -9,8 +9,8 @@ type LobbyProps = {
 
 export const Lobby = ({ room }: LobbyProps) => {
   const socket = useContext(SocketContext)
-  const isReady = room.players.filter((p) => p.id === socket.id)[0].ready
-  const isHost = socket.id === room.host
+  const isReady = room.players.filter((p) => p.id === socket.playerId)[0].ready
+  const isHost = socket.playerId === room.host
 
   return (
     <>
