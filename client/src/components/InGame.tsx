@@ -4,7 +4,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Input,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -13,6 +12,7 @@ import {
   VisuallyHidden,
   VStack
 } from '@chakra-ui/react'
+import { Select } from 'chakra-react-select'
 import { useContext, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player/youtube'
 import { SocketContext } from '../context/SocketContext'
@@ -48,6 +48,9 @@ export const InGame = ({ room }: InGameProps) => {
   const videoRef = useRef<ReactPlayer>(null)
   const socket = useContext(SocketContext)
   const bgColor = useColorModeValue('gray.100', 'gray.900')
+  const [gamesOptions, setGamesOptions] = useState<
+    { value: string; label: string }[]
+  >([])
   const [gameState, setGameState] = useState<State>()
   const [videoUrl, setVideoUrl] = useState(undefined)
   const [canPlay, setCanPlay] = useState(false)
@@ -95,6 +98,14 @@ export const InGame = ({ room }: InGameProps) => {
 
     socket.on('game:finished', () => {
       setGameState(State.FINISHED)
+    })
+
+    socket.on('game:options', (gamesOptions: string[]) => {
+      setGamesOptions(
+        gamesOptions.map((gameOption) => {
+          return { value: gameOption, label: gameOption }
+        })
+      )
     })
 
     return () => {
@@ -191,20 +202,25 @@ export const InGame = ({ room }: InGameProps) => {
                   </Heading>
                 </Box>
               </AspectRatio>
-              <Input
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                w={'90%'}
-                isInvalid={showBorder}
-                focusBorderColor={
-                  gameState === State.CHECKING
-                    ? isCorrect
-                      ? 'green.500'
-                      : 'red.500'
-                    : 'blue.500'
-                }
-                errorBorderColor={isCorrect ? 'green.500' : 'red.500'}
-              />
+              <Box w={'90%'}>
+                <Select
+                  isReadOnly={gameState !== State.PLAYING}
+                  placeholder="Enter game name..."
+                  onChange={(value) => setAnswer(value?.label || '')}
+                  value={answer ? { value: answer, label: answer } : null}
+                  focusBorderColor={
+                    showBorder
+                      ? isCorrect
+                        ? 'green.500'
+                        : 'red.500'
+                      : 'blue.500'
+                  }
+                  size={'md'}
+                  isInvalid={showBorder}
+                  options={gamesOptions}
+                  errorBorderColor={isCorrect ? 'green.500' : 'red.500'}
+                />
+              </Box>
             </VStack>
             <SongInfo name={songDetails.name} composer={songDetails.composer} />
           </HStack>
