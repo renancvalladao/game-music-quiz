@@ -14,7 +14,7 @@ import {
   VStack
 } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player/youtube'
 import { SocketContext } from '../context/SocketContext'
 import { GameHeader } from './GameHeader'
 import { SongInfo } from './SongInfo'
@@ -48,7 +48,7 @@ export const InGame = ({ room }: InGameProps) => {
   const socket = useContext(SocketContext)
   const bgColor = useColorModeValue('gray.100', 'gray.900')
   const [gameState, setGameState] = useState<State>()
-  const [videoUrl, setVideoUrl] = useState('')
+  const [videoUrl, setVideoUrl] = useState(undefined)
   const [canPlay, setCanPlay] = useState(false)
   const [answer, setAnswer] = useState('')
   const [countdown, setCountdown] = useState(0)
@@ -153,17 +153,18 @@ export const InGame = ({ room }: InGameProps) => {
                 socket.emit('game:buffered', room.id)
               }}
               onStart={() => {
+                const timeout = setTimeout(() => {
+                  setCanPlay(false)
+                  setGameState(State.ANSWERING)
+                  setVideoUrl(undefined)
+                  clearTimeout(timeout)
+                }, (room.config.guessTime + 1) * 1000)
                 setCountdown(room.config.guessTime)
                 setGameState(State.PLAYING)
                 setAnswer('')
                 setSongDetails(EMPTY_SONG_DETAILS)
                 setShowBorder(false)
                 setRound((prevRound) => prevRound + 1)
-                setTimeout(() => {
-                  setCanPlay(false)
-                  setVideoUrl('')
-                  setGameState(State.ANSWERING)
-                }, (room.config.guessTime + 1) * 1000)
               }}
             />
           </VisuallyHidden>
