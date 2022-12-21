@@ -160,6 +160,7 @@ export const InGame = ({ room }: InGameProps) => {
                 setRound((prevRound) => prevRound + 1)
                 setTimeout(() => {
                   setCanPlay(false)
+                  setVideoUrl('')
                   setGameState(State.ANSWERING)
                 }, (room.config.guessTime + 1) * 1000)
               }}
