@@ -172,6 +172,8 @@ io.on('connection', (socket) => {
     if (room.players.filter((p) => !p.ready).length === 0 && !room.playing) {
       room.playing = true
       io.emit('room:started', roomId)
+      const gamesOptions = games.map((game) => game.details.title).sort()
+      io.to(roomId).emit('game:options', gamesOptions)
       room.round++
       const { game, song } = getRandomSong(games)
       room.song = {
