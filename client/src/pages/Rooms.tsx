@@ -57,7 +57,6 @@ export const Rooms = () => {
     })
 
     return () => {
-      socket.off('room:list')
       socket.off('room:created')
       socket.off('room:joined')
       socket.off('room:started')
