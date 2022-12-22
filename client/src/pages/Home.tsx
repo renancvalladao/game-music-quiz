@@ -4,7 +4,6 @@ export const Home = () => {
   return (
     <>
       <NavBar />
-      <div>Home</div>
     </>
   )
 }
