@@ -162,7 +162,7 @@ export const InGame = ({ room }: InGameProps) => {
             <ReactPlayer
               ref={videoRef}
               url={videoUrl}
-              volume={volume / 100}
+              volume={volume / (100 * 5)}
               playing={canPlay}
               onReady={() => {
                 videoRef.current?.seekTo(seekTo)
