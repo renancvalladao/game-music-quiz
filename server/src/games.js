@@ -8,8 +8,20 @@ const banjoKazooie = {
       url: 'https://www.youtube.com/watch?v=IlzflkN7g-U'
     },
     {
+      name: "Gruntilda's Lair",
+      url: 'https://www.youtube.com/watch?v=_MjB4QYrNBY'
+    },
+    {
+      name: 'Treasure Trove Cove',
+      url: 'https://www.youtube.com/watch?v=wP8uBFQHSG4'
+    },
+    {
       name: 'Mad Monster Mansion',
       url: 'https://www.youtube.com/watch?v=VrdeAwCieuU'
+    },
+    {
+      name: 'Click Clock Wood (Spring)',
+      url: 'https://www.youtube.com/watch?v=PmBY55olVWY'
     }
   ]
 }
@@ -28,6 +40,19 @@ const castlevaniaSymphonyOfTheNight = {
     {
       name: 'Dance of Illusions',
       url: 'https://www.youtube.com/watch?v=fe-XLye-r5A'
+    },
+    {
+      name: 'Moonlight Nocturne',
+      url: 'https://www.youtube.com/watch?v=akBSz2SwcwQ'
+    },
+    { name: 'Prayer', url: 'https://www.youtube.com/watch?v=hE_mEbyUQGk' },
+    {
+      name: "Dracula's Castle",
+      url: 'https://www.youtube.com/watch?v=ow90mZMrIio'
+    },
+    {
+      name: 'Dance of Gold',
+      url: 'https://www.youtube.com/watch?v=7iJTfBYXphA'
     }
   ]
 }
@@ -59,8 +84,16 @@ const chronoTrigger = {
       url: 'https://www.youtube.com/watch?v=q7229hdxcSM'
     },
     {
+      name: "Robo's Theme",
+      url: 'https://www.youtube.com/watch?v=Jnjr0Ru0Eao'
+    },
+    {
       name: 'Corridors of Time',
       url: 'https://www.youtube.com/watch?v=HVBWTC085uA'
+    },
+    {
+      name: 'Secret of the Forest',
+      url: 'https://www.youtube.com/watch?v=mbkEfHwHlBs'
     }
   ]
 }
@@ -77,12 +110,65 @@ const darkSouls = {
       url: 'https://www.youtube.com/watch?v=zKu9rferBFU'
     },
     {
+      name: 'Ornstein & Smough',
+      url: 'https://www.youtube.com/watch?v=vamjwDXkvIM'
+    },
+    {
       name: 'Dark Sun Gwyndolin',
       url: 'https://www.youtube.com/watch?v=GsSv4MNW5Mw'
     },
     {
       name: 'Gwyn, Lord Of Cinder',
       url: 'https://www.youtube.com/watch?v=wjGGeOXfsI0'
+    }
+  ]
+}
+
+const darkSoulsII = {
+  details: {
+    title: 'Dark Souls II',
+    composer: 'Motoi Sakuraba / Yuka Kitamura'
+  },
+  songs: [
+    {
+      name: 'Fire Keepers',
+      url: 'https://www.youtube.com/watch?v=PK4nEALewsE'
+    },
+    {
+      name: 'The Last Giant',
+      url: 'https://www.youtube.com/watch?v=P0SNu7vO1BA'
+    },
+    { name: 'The Pursuer', url: 'https://www.youtube.com/watch?v=t4V8Qn-hHF8' },
+    {
+      name: 'Old Dragonslayer',
+      url: 'https://www.youtube.com/watch?v=PPEp8-8RyaU'
+    },
+    { name: 'Dragonrider', url: 'https://www.youtube.com/watch?v=iAyPu_3ym_c' }
+  ]
+}
+
+const donkeyKongCountry = {
+  details: {
+    title: 'Donkey Kong Country',
+    composer: 'Dave Wise / Eveline Novakovic / Robin Beanland'
+  },
+  songs: [
+    { name: 'Theme', url: 'https://www.youtube.com/watch?v=cscrBLh8mE8' },
+    {
+      name: 'Simian Segue',
+      url: 'https://www.youtube.com/watch?v=avyasO9uqfo'
+    },
+    {
+      name: 'DK Island Swing',
+      url: 'https://www.youtube.com/watch?v=jEE-RzKMelU'
+    },
+    {
+      name: "Cranky's Theme",
+      url: 'https://www.youtube.com/watch?v=-urk0nWomxU'
+    },
+    {
+      name: "Funky's Fugue",
+      url: 'https://www.youtube.com/watch?v=ecpMeFI4wyM'
     }
   ]
 }
@@ -174,7 +260,9 @@ const pokémonRedBlue = {
     {
       name: 'Lavender Town',
       url: 'https://www.youtube.com/watch?v=m1mdVgSeyLk'
-    }
+    },
+    { name: 'Pewter City', url: 'https://www.youtube.com/watch?v=TQ0dD9V7Fpw' },
+    { name: 'Mt. Moon', url: 'https://www.youtube.com/watch?v=p7rqCKOcezo' }
   ]
 }
 
@@ -196,7 +284,12 @@ const pokémonRubySapphire = {
       name: 'Battle! (Wild Pokémon)',
       url: 'https://www.youtube.com/watch?v=8I5Aj8Yf7GQ'
     },
-    { name: 'Cycling', url: 'https://www.youtube.com/watch?v=1bynXKGfYkA' }
+    { name: 'Cycling', url: 'https://www.youtube.com/watch?v=1bynXKGfYkA' },
+    {
+      name: 'Dewford Town',
+      url: 'https://www.youtube.com/watch?v=bG6nXUPu9k4'
+    },
+    { name: 'Route 119', url: 'https://www.youtube.com/watch?v=lcs4cPH9x50' }
   ]
 }
 
@@ -214,10 +307,25 @@ const superMario64 = {
       name: 'Inside the Castle Walls',
       url: 'https://www.youtube.com/watch?v=ZkFpUQc3Y2o'
     },
-    { name: 'File Select', url: 'https://www.youtube.com/watch?v=hrJNgLGbYg0' },
     {
       name: 'Dire, Dire Docks',
       url: 'https://www.youtube.com/watch?v=Zqa2mgjbOIM'
+    },
+    {
+      name: 'Lethal Lava Land',
+      url: 'https://www.youtube.com/watch?v=vthq62tj5XI'
+    },
+    {
+      name: 'Cool, Cool Mountain',
+      url: 'https://www.youtube.com/watch?v=LOADdASJnak'
+    },
+    {
+      name: 'Haunted House',
+      url: 'https://www.youtube.com/watch?v=Cur1UayJquw'
+    },
+    {
+      name: "Bowser's Theme",
+      url: 'https://www.youtube.com/watch?v=ATKztq3a5is'
     }
   ]
 }
@@ -243,7 +351,10 @@ const theLegendOfZeldaOcarinaOfTime = {
     {
       name: 'Kakariko Village',
       url: 'https://www.youtube.com/watch?v=cABo_HhOl_0'
-    }
+    },
+    { name: 'Shop', url: 'https://www.youtube.com/watch?v=o5xykMvJejk' },
+    { name: 'Boss Battle', url: 'https://www.youtube.com/watch?v=dTqDvaNXri4' },
+    { name: 'Hyrule Field', url: 'https://www.youtube.com/watch?v=DNTDJcQec3g' }
   ]
 }
 
@@ -286,7 +397,13 @@ const undertale = {
     {
       name: 'Megalovania',
       url: 'https://www.youtube.com/watch?v=c5daGZ96QGU'
-    }
+    },
+    {
+      name: 'Spear of Justice',
+      url: 'https://www.youtube.com/watch?v=qrBB3_rFPjg'
+    },
+    { name: 'Ruins', url: 'https://www.youtube.com/watch?v=QyPR77rg1to' },
+    { name: 'Spider Dance', url: 'https://www.youtube.com/watch?v=YZ3XjVVNagU' }
   ]
 }
 
@@ -295,6 +412,8 @@ const games = [
   castlevaniaSymphonyOfTheNight,
   chronoTrigger,
   darkSouls,
+  darkSoulsII,
+  donkeyKongCountry,
   finalFantasyVII,
   finalFantasyVI,
   finalFantasyIX,
