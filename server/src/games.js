@@ -1,20 +1,15 @@
-const banjooKazooie = {
-  details: {
-    title: 'Banjoo-Kazooie',
-    composer: 'Grant Kirkhope'
-  },
+const banjoKazooie = {
+  details: { title: 'Banjo-Kazooie', composer: 'Grant Kirkhope' },
   songs: [
-    {
-      name: 'Main Title',
-      url: 'https://www.youtube.com/watch?v=buOhUGJ9Pvc'
-    },
-    {
-      name: 'Overture',
-      url: 'https://www.youtube.com/watch?v=Lm4wplpESl4'
-    },
+    { name: 'Main Title', url: 'https://www.youtube.com/watch?v=buOhUGJ9Pvc' },
+    { name: 'Overture', url: 'https://www.youtube.com/watch?v=Lm4wplpESl4' },
     {
       name: 'Spiral Mountain',
       url: 'https://www.youtube.com/watch?v=IlzflkN7g-U'
+    },
+    {
+      name: 'Mad Monster Mansion',
+      url: 'https://www.youtube.com/watch?v=VrdeAwCieuU'
     }
   ]
 }
@@ -29,10 +24,7 @@ const castlevaniaSymphonyOfTheNight = {
       name: 'Metamorphosis 1',
       url: 'https://www.youtube.com/watch?v=HnVDnAMs_Mk'
     },
-    {
-      name: 'Prologue',
-      url: 'https://www.youtube.com/watch?v=GQKRpJ2z9b8'
-    },
+    { name: 'Prologue', url: 'https://www.youtube.com/watch?v=GQKRpJ2z9b8' },
     {
       name: 'Dance of Illusions',
       url: 'https://www.youtube.com/watch?v=fe-XLye-r5A'
@@ -74,10 +66,7 @@ const chronoTrigger = {
 }
 
 const darkSouls = {
-  details: {
-    title: 'Dark Souls',
-    composer: 'Motoi Sakuraba'
-  },
+  details: { title: 'Dark Souls', composer: 'Motoi Sakuraba' },
   songs: [
     {
       name: 'Bell Gargoyle',
@@ -98,11 +87,57 @@ const darkSouls = {
   ]
 }
 
+const finalFantasyVI = {
+  details: { title: 'Final Fantasy VI', composer: 'Nobuo Uematsu' },
+  songs: [
+    {
+      name: "Edgar & Sabin's Theme",
+      url: 'https://www.youtube.com/watch?v=j3IHRScYJ7k'
+    },
+    { name: 'Kefka', url: 'https://www.youtube.com/watch?v=_JVAYHOZQyw' },
+    {
+      name: "Terra's Theme",
+      url: 'https://www.youtube.com/watch?v=SrDiiVn1VCk'
+    }
+  ]
+}
+
+const finalFantasyVII = {
+  details: { title: 'Final Fantasy VII', composer: 'Nobuo Uematsu' },
+  songs: [
+    { name: 'The Prelude', url: 'https://www.youtube.com/watch?v=qDL8s5_RNN0' },
+    {
+      name: "Tifa's Theme",
+      url: 'https://www.youtube.com/watch?v=KhvlkOOWaHg'
+    },
+    {
+      name: "Aerith's Theme",
+      url: 'https://www.youtube.com/watch?v=TB0RvWPoGUY'
+    },
+    {
+      name: 'One-Winged Angel',
+      url: 'https://www.youtube.com/watch?v=ZCww09T3h1s'
+    }
+  ]
+}
+
+const finalFantasyIX = {
+  details: { title: 'Final Fantasy IX', composer: 'Nobuo Uematsu' },
+  songs: [
+    {
+      name: 'A Place to Call Home',
+      url: 'https://www.youtube.com/watch?v=NdQuypPplKY'
+    },
+    {
+      name: "Vivi's Theme",
+      url: 'https://www.youtube.com/watch?v=DOil57eSiOM'
+    },
+    { name: 'Roses of May', url: 'https://www.youtube.com/watch?v=djz5LAkV1so' }
+  ]
+}
+
 const persona4 = {
-  details: {
-    title: 'Persona 4',
-    composer: 'Shoji Meguro'
-  },
+  details: { title: 'Persona 4', composer: 'Shoji Meguro' },
   songs: [
     {
       name: 'Pursuing My True Self',
@@ -127,6 +162,44 @@ const persona4 = {
   ]
 }
 
+const pokémonRedBlue = {
+  details: { title: 'Pokémon Red & Blue', composer: 'Junichi Masuda' },
+  songs: [
+    { name: 'Opening', url: 'https://www.youtube.com/watch?v=56C65iKU8Wg' },
+    { name: 'Pallet Town', url: 'https://www.youtube.com/watch?v=DQBEoQoTTC0' },
+    {
+      name: 'Battle! (Wild Pokémon)',
+      url: 'https://www.youtube.com/watch?v=6kr6tuacnSA'
+    },
+    {
+      name: 'Lavender Town',
+      url: 'https://www.youtube.com/watch?v=m1mdVgSeyLk'
+    }
+  ]
+}
+
+const pokémonRubySapphire = {
+  details: {
+    title: 'Pokémon Ruby & Sapphire',
+    composer: 'Go Ichinose / Junichi Masuda / Morikazu Aoki'
+  },
+  songs: [
+    {
+      name: 'Title Screen: Main Theme',
+      url: 'https://www.youtube.com/watch?v=4sa_0aCfdCU'
+    },
+    {
+      name: 'Littleroot Town',
+      url: 'https://www.youtube.com/watch?v=dX0-pcjQRwg'
+    },
+    {
+      name: 'Battle! (Wild Pokémon)',
+      url: 'https://www.youtube.com/watch?v=8I5Aj8Yf7GQ'
+    },
+    { name: 'Cycling', url: 'https://www.youtube.com/watch?v=1bynXKGfYkA' }
+  ]
+}
+
 const superMario64 = {
   details: {
     title: 'Super Mario 64',
@@ -141,7 +214,11 @@ const superMario64 = {
       name: 'Inside the Castle Walls',
       url: 'https://www.youtube.com/watch?v=ZkFpUQc3Y2o'
     },
-    { name: 'File Select', url: 'https://www.youtube.com/watch?v=hrJNgLGbYg0' }
+    { name: 'File Select', url: 'https://www.youtube.com/watch?v=hrJNgLGbYg0' },
+    {
+      name: 'Dire, Dire Docks',
+      url: 'https://www.youtube.com/watch?v=Zqa2mgjbOIM'
+    }
   ]
 }
 
@@ -156,12 +233,37 @@ const theLegendOfZeldaOcarinaOfTime = {
       url: 'https://www.youtube.com/watch?v=N22STVAxL5M'
     },
     {
-      name: 'Enter Ganondorf',
-      url: 'https://www.youtube.com/watch?v=dyF6wkV0P10'
+      name: 'Kokiri Forest',
+      url: 'https://www.youtube.com/watch?v=NiGgoNmsfWk'
     },
     {
       name: 'Windmill Hut',
       url: 'https://www.youtube.com/watch?v=u6KQzVZ092Y'
+    },
+    {
+      name: 'Kakariko Village',
+      url: 'https://www.youtube.com/watch?v=cABo_HhOl_0'
+    }
+  ]
+}
+
+const trailsInTheSkyFC = {
+  details: {
+    title: 'The Legend of Heroes: Trails in the Sky',
+    composer: 'Hayato Sonoda / Wataru Ishibashi'
+  },
+  songs: [
+    {
+      name: 'Rock on the Road',
+      url: 'https://www.youtube.com/watch?v=Y6IE5Q9e3Xc'
+    },
+    {
+      name: 'Confession',
+      url: 'https://www.youtube.com/watch?v=Fnqh8m4MiZs'
+    },
+    {
+      name: 'The Whereabouts of Light',
+      url: 'https://www.youtube.com/watch?v=Kb07kMxiKvE'
     }
   ]
 }
@@ -189,13 +291,19 @@ const undertale = {
 }
 
 const games = [
-  banjooKazooie,
+  banjoKazooie,
   castlevaniaSymphonyOfTheNight,
   chronoTrigger,
   darkSouls,
+  finalFantasyVII,
+  finalFantasyVI,
+  finalFantasyIX,
   persona4,
+  pokémonRedBlue,
+  pokémonRubySapphire,
   superMario64,
   theLegendOfZeldaOcarinaOfTime,
+  trailsInTheSkyFC,
   undertale
 ]
 
