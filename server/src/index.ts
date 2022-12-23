@@ -128,6 +128,40 @@ io.on('connection', (socket) => {
     }
   })
 
+  socket.on('room:leave', (roomId) => {
+    const [room] = rooms.filter((room) => room.id === roomId)
+    if (!room) {
+      // TODO: ERROR
+      return
+    }
+
+    room.players = room.players.filter((player) => player.id !== playerId)
+    socket.leave(roomId)
+    io.emit('room:left', { roomId, playerId })
+    if (room.players.length === 0) {
+      // TODO: CLOSE ROOM
+      return
+    }
+    if (room.host === playerId) {
+      room.host = room.players[0].id
+      room.players[0].ready = true
+      io.emit('room:host', { roomId, newHostId: room.host })
+    }
+    if (room.playing) {
+      io.to(roomId).emit(
+        'game:standings',
+        room.players
+          .sort((p1, p2) => p2.score - p1.score)
+          .map((player) => {
+            return {
+              name: player.id,
+              score: player.score
+            }
+          })
+      )
+    }
+  })
+
   socket.on('room:ready', (roomId) => {
     const [room] = rooms.filter((room) => room.id === roomId)
     if (!room) {
@@ -172,6 +206,17 @@ io.on('connection', (socket) => {
     if (room.players.filter((p) => !p.ready).length === 0 && !room.playing) {
       room.playing = true
       io.emit('room:started', roomId)
+      io.to(roomId).emit(
+        'game:standings',
+        room.players
+          .sort((p1, p2) => p2.score - p1.score)
+          .map((player) => {
+            return {
+              name: player.id,
+              score: player.score
+            }
+          })
+      )
       const gamesOptions = games.map((game) => game.details.title).sort()
       io.to(roomId).emit('game:options', gamesOptions)
       room.round++
@@ -227,9 +272,10 @@ io.on('connection', (socket) => {
     socket.emit('game:checked', correct)
     if (room.players.filter((p) => !p.answered).length === 0) {
       room.players.forEach((p) => (p.answered = false))
-      io.to(roomId).emit('game:details', {
-        song: room.song,
-        newStandings: room.players
+      io.to(roomId).emit('game:details', room.song)
+      io.to(roomId).emit(
+        'game:standings',
+        room.players
           .sort((p1, p2) => p2.score - p1.score)
           .map((player) => {
             return {
@@ -237,7 +283,7 @@ io.on('connection', (socket) => {
               score: player.score
             }
           })
-      })
+      )
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
       } else {

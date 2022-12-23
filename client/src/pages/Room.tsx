@@ -29,6 +29,30 @@ export const Room = () => {
       })
     })
 
+    socket.on('room:left', ({ roomId, playerId }) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        if (prevRoom.id === roomId) {
+          prevRoom.players = prevRoom.players.filter(
+            (player) => player.id !== playerId
+          )
+        }
+
+        return { ...prevRoom }
+      })
+    })
+
+    socket.on('room:host', ({ roomId, newHostId }) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        if (prevRoom.id === roomId) {
+          prevRoom.host = newHostId
+        }
+
+        return { ...prevRoom }
+      })
+    })
+
     socket.on('room:started', (roomId) => {
       setRoom((prevRoom) => {
         if (!prevRoom) return null
@@ -65,7 +89,10 @@ export const Room = () => {
     })
 
     return () => {
+      socket.emit('room:leave', roomId)
       socket.off('room:joined')
+      socket.off('room:left')
+      socket.off('room:host')
       socket.off('room:started')
       socket.off('player:ready')
       socket.off('player:unready')

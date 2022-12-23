@@ -44,6 +44,32 @@ export const Rooms = () => {
       })
     })
 
+    socket.on('room:left', ({ roomId, playerId }) => {
+      setRooms((prevRooms) => {
+        prevRooms.forEach((room) => {
+          if (room.id === roomId) {
+            room.players = room.players.filter(
+              (player) => player.id !== playerId
+            )
+          }
+        })
+
+        return [...prevRooms]
+      })
+    })
+
+    socket.on('room:host', ({ roomId, newHostId }) => {
+      setRooms((prevRooms) => {
+        prevRooms.forEach((room) => {
+          if (room.id === roomId) {
+            room.host = newHostId
+          }
+        })
+
+        return [...prevRooms]
+      })
+    })
+
     socket.on('room:started', (roomId) => {
       setRooms((prevRooms) => {
         prevRooms.forEach((room) => {
@@ -59,6 +85,8 @@ export const Rooms = () => {
     return () => {
       socket.off('room:created')
       socket.off('room:joined')
+      socket.off('room:left')
+      socket.off('room:host')
       socket.off('room:started')
     }
   }, [socket])
