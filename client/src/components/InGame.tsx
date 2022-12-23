@@ -68,14 +68,6 @@ export const InGame = ({ room }: InGameProps) => {
   )
 
   useEffect(() => {
-    setStandings(
-      room.players.map((player) => {
-        return { name: player.id, score: 0 }
-      })
-    )
-  }, [room])
-
-  useEffect(() => {
     socket.on('game:song', (url, seek) => {
       setGameState(State.BUFFERING)
       setVideoUrl(url)
@@ -90,10 +82,13 @@ export const InGame = ({ room }: InGameProps) => {
       setIsCorrect(correct)
     })
 
-    socket.on('game:details', ({ song, newStandings }) => {
+    socket.on('game:details', (song) => {
       setSongDetails(song)
-      setStandings(newStandings)
       setShowBorder(true)
+    })
+
+    socket.on('game:standings', (newStandings) => {
+      setStandings(newStandings)
     })
 
     socket.on('game:finished', () => {
@@ -113,6 +108,7 @@ export const InGame = ({ room }: InGameProps) => {
       socket.off('game:play')
       socket.off('game:checked')
       socket.off('game:details')
+      socket.off('game:standings')
       socket.off('game:finished')
     }
   }, [socket])
