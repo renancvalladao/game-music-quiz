@@ -82,6 +82,12 @@ export const Rooms = () => {
       })
     })
 
+    socket.on('room:closed', (roomId) => {
+      setRooms((prevRooms) => {
+        return prevRooms.filter((room) => room.id !== roomId)
+      })
+    })
+
     return () => {
       socket.off('room:created')
       socket.off('room:joined')

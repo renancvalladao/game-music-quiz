@@ -139,7 +139,13 @@ io.on('connection', (socket) => {
     socket.leave(roomId)
     io.emit('room:left', { roomId, playerId })
     if (room.players.length === 0) {
-      // TODO: CLOSE ROOM
+      for (let i = 0; i < rooms.length; i++) {
+        if (rooms[i].id === roomId) {
+          rooms.splice(i, 1)
+          break
+        }
+      }
+      io.emit('room:closed', roomId)
       return
     }
     if (room.host === playerId) {
