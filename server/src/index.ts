@@ -61,6 +61,40 @@ const getRandomSong = (games: Game[]) => {
   return { game: game.details, song }
 }
 
+const leaveRoom = (room: Room, playerId: string) => {
+  const roomId = room.id
+  room.players = room.players.filter((player) => player.id !== playerId)
+  if (room.players.length === 0) {
+    for (let i = 0; i < rooms.length; i++) {
+      if (rooms[i].id === roomId) {
+        rooms.splice(i, 1)
+        break
+      }
+    }
+    io.emit('room:closed', roomId)
+    return
+  }
+  io.emit('room:left', { roomId, playerId })
+  if (room.host === playerId) {
+    room.host = room.players[0].id
+    room.players[0].ready = true
+    io.emit('room:host', { roomId, newHostId: room.host })
+  }
+  if (room.playing) {
+    io.to(roomId).emit(
+      'game:standings',
+      room.players
+        .sort((p1, p2) => p2.score - p1.score)
+        .map((player) => {
+          return {
+            name: player.id,
+            score: player.score
+          }
+        })
+    )
+  }
+}
+
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`)
   let playerId = socket.handshake.auth.playerId
@@ -135,37 +169,8 @@ io.on('connection', (socket) => {
       return
     }
 
-    room.players = room.players.filter((player) => player.id !== playerId)
     socket.leave(roomId)
-    io.emit('room:left', { roomId, playerId })
-    if (room.players.length === 0) {
-      for (let i = 0; i < rooms.length; i++) {
-        if (rooms[i].id === roomId) {
-          rooms.splice(i, 1)
-          break
-        }
-      }
-      io.emit('room:closed', roomId)
-      return
-    }
-    if (room.host === playerId) {
-      room.host = room.players[0].id
-      room.players[0].ready = true
-      io.emit('room:host', { roomId, newHostId: room.host })
-    }
-    if (room.playing) {
-      io.to(roomId).emit(
-        'game:standings',
-        room.players
-          .sort((p1, p2) => p2.score - p1.score)
-          .map((player) => {
-            return {
-              name: player.id,
-              score: player.score
-            }
-          })
-      )
-    }
+    leaveRoom(room, playerId)
   })
 
   socket.on('room:ready', (roomId) => {
@@ -307,6 +312,15 @@ io.on('connection', (socket) => {
         }, 5 * 1000)
       }
     }
+  })
+
+  socket.on('disconnecting', () => {
+    socket.rooms.forEach((roomId) => {
+      const [room] = rooms.filter((room) => room.id === roomId)
+      if (room) {
+        leaveRoom(room, playerId)
+      }
+    })
   })
 })
 
