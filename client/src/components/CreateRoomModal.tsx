@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -33,6 +34,7 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState('5')
   const [numberOfSongs, setNumberOfSongs] = useState('15')
   const [guessTime, setGuessTime] = useState('20')
+  const isError = roomName === ''
 
   const createRoom = () => {
     socket.emit(
@@ -68,12 +70,15 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-            <FormControl>
+            <FormControl isRequired isInvalid={isError}>
               <FormLabel>Room Name</FormLabel>
               <Input
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
               />
+              {isError && (
+                <FormErrorMessage>Room name is required.</FormErrorMessage>
+              )}
             </FormControl>
             <FormControl>
               <FormLabel>Number of Players</FormLabel>
@@ -132,6 +137,7 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
         <ModalFooter>
           <Button
             colorScheme="green"
+            disabled={isError}
             onClick={() => {
               createRoom()
               setRoomName('')
