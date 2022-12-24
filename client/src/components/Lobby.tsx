@@ -18,6 +18,7 @@ export const Lobby = ({ room }: LobbyProps) => {
         <VStack px={64} spacing={8}>
           {isHost ? (
             <Button
+              disabled={room.players.some((player) => !player.ready)}
               onClick={() => socket.emit('room:start', room.id)}
               colorScheme="green"
               size="lg"
