@@ -47,6 +47,10 @@ export const Room = () => {
         if (!prevRoom) return null
         if (prevRoom.id === roomId) {
           prevRoom.host = newHostId
+          const newHost = prevRoom.players.filter(
+            (player) => player.id === newHostId
+          )[0]
+          newHost.ready = true
         }
 
         return { ...prevRoom }
