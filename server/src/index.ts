@@ -262,7 +262,7 @@ io.on('connection', (socket) => {
       io.to(roomId).emit('game:details', room.song)
       io.to(roomId).emit(
         'room:standings',
-        room.players.sort((p1, p2) => p2.score - p1.score)
+        [...room.players].sort((p1, p2) => p2.score - p1.score)
       )
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
