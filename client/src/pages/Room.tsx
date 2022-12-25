@@ -64,6 +64,15 @@ export const Room = () => {
       })
     })
 
+    socket.on('room:standings', (players) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+        prevRoom.players = players
+
+        return { ...prevRoom }
+      })
+    })
+
     socket.on('player:ready', (playerId) => {
       setRoom((prevRoom) => {
         if (!prevRoom) return null
@@ -94,6 +103,7 @@ export const Room = () => {
       socket.off('room:left')
       socket.off('room:host')
       socket.off('room:started')
+      socket.off('room:standings')
       socket.off('player:ready')
       socket.off('player:unready')
     }

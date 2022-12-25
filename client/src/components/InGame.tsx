@@ -63,9 +63,6 @@ export const InGame = ({ room }: InGameProps) => {
   const [seekTo, setSeekTo] = useState(0)
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
-  const [standings, setStandings] = useState<{ name: string; score: number }[]>(
-    []
-  )
 
   useEffect(() => {
     socket.on('game:song', (url, seek) => {
@@ -87,10 +84,6 @@ export const InGame = ({ room }: InGameProps) => {
       setShowBorder(true)
     })
 
-    socket.on('game:standings', (newStandings) => {
-      setStandings(newStandings)
-    })
-
     socket.on('game:finished', () => {
       setGameState(State.FINISHED)
     })
@@ -108,7 +101,6 @@ export const InGame = ({ room }: InGameProps) => {
       socket.off('game:play')
       socket.off('game:checked')
       socket.off('game:details')
-      socket.off('game:standings')
       socket.off('game:finished')
     }
   }, [socket])
@@ -185,7 +177,14 @@ export const InGame = ({ room }: InGameProps) => {
             justifyContent={'space-around'}
             alignItems={'start'}
           >
-            <Standings standings={standings} />
+            <Standings
+              standings={room.players.map((player) => {
+                return {
+                  name: player.id,
+                  score: player.score || 0
+                }
+              })}
+            />
             <VStack>
               <AspectRatio w="520px" ratio={4 / 3}>
                 <Box bg={bgColor}>

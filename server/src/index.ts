@@ -80,19 +80,6 @@ const leaveRoom = (room: Room, playerId: string) => {
     room.players[0].ready = true
     io.emit('room:host', { roomId, newHostId: room.host })
   }
-  if (room.playing) {
-    io.to(roomId).emit(
-      'game:standings',
-      room.players
-        .sort((p1, p2) => p2.score - p1.score)
-        .map((player) => {
-          return {
-            name: player.id,
-            score: player.score
-          }
-        })
-    )
-  }
 }
 
 io.on('connection', (socket) => {
@@ -217,17 +204,6 @@ io.on('connection', (socket) => {
     if (room.players.filter((p) => !p.ready).length === 0 && !room.playing) {
       room.playing = true
       io.emit('room:started', roomId)
-      io.to(roomId).emit(
-        'game:standings',
-        room.players
-          .sort((p1, p2) => p2.score - p1.score)
-          .map((player) => {
-            return {
-              name: player.id,
-              score: player.score
-            }
-          })
-      )
       const gamesOptions = games.map((game) => game.details.title).sort()
       io.to(roomId).emit('game:options', gamesOptions)
       room.round++
@@ -285,15 +261,8 @@ io.on('connection', (socket) => {
       room.players.forEach((p) => (p.answered = false))
       io.to(roomId).emit('game:details', room.song)
       io.to(roomId).emit(
-        'game:standings',
-        room.players
-          .sort((p1, p2) => p2.score - p1.score)
-          .map((player) => {
-            return {
-              name: player.id,
-              score: player.score
-            }
-          })
+        'room:standings',
+        room.players.sort((p1, p2) => p2.score - p1.score)
       )
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')

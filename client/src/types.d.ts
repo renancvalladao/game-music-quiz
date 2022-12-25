@@ -14,4 +14,5 @@ type Room = {
 type Player = {
   id: string
   ready: boolean
+  score?: number
 }
