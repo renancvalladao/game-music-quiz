@@ -20,7 +20,7 @@ import { GameHeader } from './GameHeader'
 import { SongInfo } from './SongInfo'
 import { Standings } from './Standings'
 
-enum State {
+enum GameState {
   BUFFERING,
   PLAYING,
   ANSWERING,
@@ -51,7 +51,7 @@ export const InGame = ({ room }: InGameProps) => {
   const [gamesOptions, setGamesOptions] = useState<
     { value: string; label: string }[]
   >([])
-  const [gameState, setGameState] = useState<State>()
+  const [gameState, setGameState] = useState<GameState>()
   const [videoUrl, setVideoUrl] = useState(undefined)
   const [canPlay, setCanPlay] = useState(false)
   const [shouldRenderValue, setShouldRenderValue] = useState(true)
@@ -68,7 +68,7 @@ export const InGame = ({ room }: InGameProps) => {
 
   useEffect(() => {
     socket.on('game:song', (url, seek) => {
-      setGameState(State.BUFFERING)
+      setGameState(GameState.BUFFERING)
       setVideoUrl(url)
       setSeekTo(seek)
     })
@@ -87,7 +87,7 @@ export const InGame = ({ room }: InGameProps) => {
     })
 
     socket.on('game:finished', () => {
-      setGameState(State.FINISHED)
+      setGameState(GameState.FINISHED)
     })
 
     socket.on('game:options', (gamesOptions: string[]) => {
@@ -108,11 +108,11 @@ export const InGame = ({ room }: InGameProps) => {
   }, [socket])
 
   useEffect(() => {
-    if (gameState === State.ANSWERING) {
+    if (gameState === GameState.ANSWERING) {
       socket.emit('game:answer', room.id, answer)
       setFilter('')
       setShouldRenderValue(true)
-      setGameState(State.CHECKING)
+      setGameState(GameState.CHECKING)
     }
   }, [gameState, answer, socket, room.id])
 
@@ -163,12 +163,12 @@ export const InGame = ({ room }: InGameProps) => {
               onStart={() => {
                 const timeout = setTimeout(() => {
                   setCanPlay(false)
-                  setGameState(State.ANSWERING)
+                  setGameState(GameState.ANSWERING)
                   setVideoUrl(undefined)
                   clearTimeout(timeout)
                 }, (room.config.guessTime + 1) * 1000)
                 setCountdown(room.config.guessTime)
-                setGameState(State.PLAYING)
+                setGameState(GameState.PLAYING)
                 setAnswer('')
                 setSongDetails(EMPTY_SONG_DETAILS)
                 setShowBorder(false)
@@ -193,9 +193,9 @@ export const InGame = ({ room }: InGameProps) => {
               <AspectRatio w="100%" ratio={5 / 3}>
                 <Box bg={bgColor}>
                   <Heading>
-                    {gameState === State.PLAYING
+                    {gameState === GameState.PLAYING
                       ? countdown
-                      : gameState === State.FINISHED
+                      : gameState === GameState.FINISHED
                       ? 'Finished'
                       : 'Waiting...'}
                   </Heading>
@@ -205,7 +205,7 @@ export const InGame = ({ room }: InGameProps) => {
                 <Select
                   maxMenuHeight={175}
                   useBasicStyles
-                  isReadOnly={gameState !== State.PLAYING}
+                  isReadOnly={gameState !== GameState.PLAYING}
                   placeholder="Enter game name..."
                   onChange={(value) => {
                     setShouldRenderValue(true)
@@ -237,7 +237,8 @@ export const InGame = ({ room }: InGameProps) => {
                   }
                   components={{ DropdownIndicator: () => <></> }}
                   onFocus={() => {
-                    if (gameState === State.PLAYING) setShouldRenderValue(false)
+                    if (gameState === GameState.PLAYING)
+                      setShouldRenderValue(false)
                   }}
                   onBlur={() => setShouldRenderValue(true)}
                 />
