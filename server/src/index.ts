@@ -316,7 +316,8 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('disconnecting', () => {
+  socket.on('disconnecting', (reason) => {
+    console.log('Disconnect reason:' + reason)
     socket.rooms.forEach((roomId) => {
       const [room] = rooms.filter((room) => room.id === roomId)
       if (room) {
