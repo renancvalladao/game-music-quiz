@@ -12,6 +12,17 @@ export const Room = () => {
   const [room, setRoom] = useState<Room | null>(null)
 
   useEffect(() => {
+    const onUnload = () => {
+      socket.emit('room:leave', roomId)
+    }
+
+    window.addEventListener('unload', onUnload)
+    return () => {
+      window.removeEventListener('unload', onUnload)
+    }
+  }, [roomId, socket])
+
+  useEffect(() => {
     socket.emit('room:join', roomId, (room: Room) => {
       setRoom(room)
     })

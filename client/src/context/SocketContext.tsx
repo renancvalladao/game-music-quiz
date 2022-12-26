@@ -8,7 +8,8 @@ type SocketContextProps = {
 }
 
 const socket = io(
-  'https://gmq-server.onrender.com' || 'http://localhost:3001'
+  'https://gmq-server.onrender.com' || 'http://localhost:3001',
+  { closeOnBeforeunload: false }
 ) as PlayerSocket
 
 export const SocketContext = createContext<PlayerSocket>(socket)
