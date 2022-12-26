@@ -22,6 +22,7 @@ export const SocketContextProvider = ({ children }: SocketContextProps) => {
     })
 
     socket.on('socket:username', (newUsername) => {
+      socket.auth = { ...socket.auth, username: newUsername }
       socket.username = newUsername
     })
 
