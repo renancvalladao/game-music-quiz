@@ -54,6 +54,8 @@ export const InGame = ({ room }: InGameProps) => {
   const [gameState, setGameState] = useState<State>()
   const [videoUrl, setVideoUrl] = useState(undefined)
   const [canPlay, setCanPlay] = useState(false)
+  const [shouldRenderValue, setShouldRenderValue] = useState(true)
+  const [filter, setFilter] = useState('')
   const [answer, setAnswer] = useState('')
   const [countdown, setCountdown] = useState(0)
   const [isCorrect, setIsCorrect] = useState(false)
@@ -108,6 +110,8 @@ export const InGame = ({ room }: InGameProps) => {
   useEffect(() => {
     if (gameState === State.ANSWERING) {
       socket.emit('game:answer', room.id, answer)
+      setFilter('')
+      setShouldRenderValue(true)
       setGameState(State.CHECKING)
     }
   }, [gameState, answer, socket, room.id])
@@ -185,8 +189,8 @@ export const InGame = ({ room }: InGameProps) => {
                 }
               })}
             />
-            <VStack>
-              <AspectRatio w="520px" ratio={4 / 3}>
+            <VStack w="520px" spacing={'24px'}>
+              <AspectRatio w="100%" ratio={5 / 3}>
                 <Box bg={bgColor}>
                   <Heading>
                     {gameState === State.PLAYING
@@ -199,9 +203,16 @@ export const InGame = ({ room }: InGameProps) => {
               </AspectRatio>
               <Box w={'90%'}>
                 <Select
+                  maxMenuHeight={175}
+                  useBasicStyles
                   isReadOnly={gameState !== State.PLAYING}
                   placeholder="Enter game name..."
-                  onChange={(value) => setAnswer(value?.label || '')}
+                  onChange={(value) => {
+                    setShouldRenderValue(true)
+                    setAnswer(value?.label || '')
+                  }}
+                  onInputChange={(value) => setFilter(value)}
+                  inputValue={filter}
                   value={answer ? { value: answer, label: answer } : null}
                   focusBorderColor={
                     showBorder
@@ -210,10 +221,25 @@ export const InGame = ({ room }: InGameProps) => {
                         : 'red.500'
                       : 'blue.500'
                   }
-                  size={'md'}
                   isInvalid={showBorder}
-                  options={gamesOptions}
+                  blurInputOnSelect={true}
+                  openMenuOnClick={false}
+                  controlShouldRenderValue={shouldRenderValue}
                   errorBorderColor={isCorrect ? 'green.500' : 'red.500'}
+                  options={
+                    filter === ''
+                      ? []
+                      : gamesOptions.filter((option) =>
+                          option.label
+                            .toLowerCase()
+                            .includes(filter.toLowerCase())
+                        )
+                  }
+                  components={{ DropdownIndicator: () => <></> }}
+                  onFocus={() => {
+                    if (gameState === State.PLAYING) setShouldRenderValue(false)
+                  }}
+                  onBlur={() => setShouldRenderValue(true)}
                 />
               </Box>
             </VStack>
