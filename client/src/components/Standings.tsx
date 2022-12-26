@@ -9,6 +9,7 @@ import {
 
 type StandingsProps = {
   standings: {
+    id: string
     name: string
     score: number
   }[]
@@ -24,7 +25,7 @@ export const Standings = ({ standings }: StandingsProps) => {
       </CardHeader>
       <CardBody>
         {standings.map((standing) => (
-          <Text key={standing.name} noOfLines={1}>
+          <Text key={standing.id} noOfLines={1}>
             {standing.score} {standing.name}
           </Text>
         ))}

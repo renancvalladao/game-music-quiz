@@ -56,7 +56,7 @@ export const Lobby = ({ room }: LobbyProps) => {
             {room.players.map((player) => (
               <PlayerAvatar
                 key={player.id}
-                name={player.id}
+                name={player.username}
                 isHost={player.id === room.host}
                 isReady={player.ready}
               />

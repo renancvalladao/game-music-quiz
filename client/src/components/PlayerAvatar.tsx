@@ -11,7 +11,14 @@ export const PlayerAvatar = ({ name, isHost, isReady }: PlayerAvatarProps) => {
 
   return (
     <Flex>
-      <Avatar showBorder borderColor={isReady ? 'green.500' : ''} size={'xl'} />
+      <Avatar
+        bg="gray.400"
+        name={name}
+        showBorder
+        borderColor={isReady ? 'green.500' : ''}
+        borderWidth={'medium'}
+        size={'xl'}
+      />
       <Flex direction={'column'} justifyContent={isHost ? 'start' : 'center'}>
         {isHost && (
           <Flex

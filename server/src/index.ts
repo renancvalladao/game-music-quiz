@@ -25,6 +25,7 @@ type Room = {
 
 type Player = {
   id: string
+  username: string
   ready: boolean
   buffered: boolean
   answered: boolean
@@ -87,13 +88,28 @@ io.on('connection', (socket) => {
   let playerId = socket.handshake.auth.playerId
   if (!playerId) {
     playerId = randomUUID()
-    socket.emit('player:id', playerId)
+    socket.emit('socket:playerId', playerId)
   }
+  let username = socket.handshake.auth.username || playerId
 
   rooms.forEach((room) => {
     if (room.players.some((p) => p.id === playerId)) {
       socket.join(room.id)
     }
+  })
+
+  socket.on('username:change', (newUsername) => {
+    username = newUsername
+    socket.emit('socket:username', newUsername)
+    const myRooms = rooms.filter((room) => socket.rooms.has(room.id))
+    myRooms.forEach((room) => {
+      room.players.forEach((player) => {
+        if (player.id === playerId) {
+          player.username = newUsername
+          io.emit('username:changed', room.id, playerId, newUsername)
+        }
+      })
+    })
   })
 
   socket.on('room:list', (callback) => {
@@ -106,7 +122,16 @@ io.on('connection', (socket) => {
       id: roomId,
       name,
       host: playerId,
-      players: [],
+      players: [
+        {
+          id: playerId,
+          username,
+          ready: true,
+          buffered: false,
+          answered: false,
+          score: 0
+        }
+      ],
       playing: false,
       round: 0,
       config
@@ -134,18 +159,26 @@ io.on('connection', (socket) => {
       // TODO: FULL
       return
     }
+
+    socket.join(roomId)
+
+    if (playerId === room.host) {
+      callback(room)
+      return
+    }
+
     const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
-      socket.join(roomId)
       room.players.push({
         id: playerId,
+        username,
         ready: playerId === room.host ? true : false,
         buffered: false,
         answered: false,
         score: 0
       })
       callback(room)
-      io.emit('room:joined', { roomId, playerId })
+      io.emit('room:joined', roomId, { playerId, username })
     }
   })
 

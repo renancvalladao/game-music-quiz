@@ -184,7 +184,8 @@ export const InGame = ({ room }: InGameProps) => {
             <Standings
               standings={room.players.map((player) => {
                 return {
-                  name: player.id,
+                  id: player.id,
+                  name: player.username,
                   score: player.score || 0
                 }
               })}

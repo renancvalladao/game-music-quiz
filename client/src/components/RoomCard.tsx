@@ -42,7 +42,9 @@ export const RoomCard = ({
     <Card w="100%">
       <CardHeader>
         <Heading size="md">{name}</Heading>
-        <Text>Host: {host}</Text>
+        <Text>
+          Host: {players.filter((player) => player.id === host)[0].username}
+        </Text>
         {playing ? (
           <Badge colorScheme="purple">Playing</Badge>
         ) : isFull ? (

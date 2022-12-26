@@ -13,6 +13,7 @@ type Room = {
 
 type Player = {
   id: string
+  username: string
   ready: boolean
   score?: number
 }

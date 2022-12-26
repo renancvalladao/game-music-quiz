@@ -1,7 +1,7 @@
 import { createContext, useEffect } from 'react'
 import { io, Socket } from 'socket.io-client'
 
-type PlayerSocket = Socket & { playerId?: string }
+type PlayerSocket = Socket & { playerId?: string; username?: string }
 
 type SocketContextProps = {
   children: React.ReactNode
@@ -15,13 +15,19 @@ export const SocketContext = createContext<PlayerSocket>(socket)
 
 export const SocketContextProvider = ({ children }: SocketContextProps) => {
   useEffect(() => {
-    socket.on('player:id', (playerId) => {
-      socket.auth = { playerId }
+    socket.on('socket:playerId', (playerId) => {
+      socket.auth = { playerId, username: playerId }
       socket.playerId = playerId
+      socket.username = playerId
+    })
+
+    socket.on('socket:username', (newUsername) => {
+      socket.username = newUsername
     })
 
     return () => {
-      socket.off('player:id')
+      socket.off('socket:playerId')
+      socket.off('socket:username')
     }
   }, [])
   return (

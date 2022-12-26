@@ -1,18 +1,22 @@
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
   Flex,
   HStack,
+  IconButton,
   Link,
   Text,
   useColorMode,
-  useColorModeValue
+  useColorModeValue,
+  useDisclosure
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
+import { SettingsModal } from './SettingsModal'
 
 export const NavBar = () => {
   const { colorMode, toggleColorMode } = useColorMode()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <Box bg={useColorModeValue('gray.100', 'gray.900')}>
       <Flex h={16} px={64} alignItems={'center'}>
@@ -25,9 +29,15 @@ export const NavBar = () => {
             Rooms
           </Link>
         </HStack>
-        <Button onClick={toggleColorMode}>
+        <Button mr={20} onClick={toggleColorMode}>
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         </Button>
+        <IconButton
+          aria-label="Settings"
+          icon={<SettingsIcon />}
+          onClick={onOpen}
+        />
+        {isOpen && <SettingsModal isOpen={isOpen} onClose={onClose} />}
       </Flex>
     </Box>
   )
