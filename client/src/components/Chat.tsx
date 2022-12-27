@@ -1,5 +1,5 @@
 import { Stack, Textarea, useColorModeValue, VStack } from '@chakra-ui/react'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { SocketContext } from '../context/SocketContext'
 import { Message } from './Message'
 
@@ -14,6 +14,7 @@ type ChatProps = {
 
 export const Chat = ({ room }: ChatProps) => {
   const socket = useContext(SocketContext)
+  const messagesRef = useRef<HTMLDivElement>(null)
   const [messageText, setMessageText] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [usernamesMap, setUsernamesMap] = useState<{ [key: string]: string }>(
@@ -40,6 +41,10 @@ export const Chat = ({ room }: ChatProps) => {
       socket.off('message:received')
     }
   }, [socket])
+
+  useEffect(() => {
+    messagesRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
     <Stack
@@ -77,6 +82,7 @@ export const Chat = ({ room }: ChatProps) => {
               isSelf={message.author === socket.playerId}
             />
           ))}
+          <div ref={messagesRef} />
         </VStack>
         <Textarea
           bg={useColorModeValue('gray.200', 'gray.800')}
