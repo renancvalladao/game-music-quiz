@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { SocketContext } from '../context/SocketContext'
 import { Lobby } from '../components/Lobby'
 import { InGame } from '../components/InGame'
+import { Chat } from '../components/Chat'
 
 export const Room = () => {
   const { roomId } = useParams()
@@ -143,17 +144,17 @@ export const Room = () => {
     <Box>
       <NavBar />
       <Flex>
-        <Box w={'100%'} pt={8}>
-          {!room ? (
-            <div>Loading</div>
-          ) : (
-            <>
+        {!room ? (
+          <div>Loading</div>
+        ) : (
+          <>
+            <Box w={'100%'} pt={8}>
               <InGame room={room} />
               <Lobby room={room} />
-            </>
-          )}
-        </Box>
-        <Box h={'calc(100vh - 64px)'} w={'500px'} bg={'pink'}></Box>
+            </Box>
+            <Chat room={room} />
+          </>
+        )}
       </Flex>
     </Box>
   )

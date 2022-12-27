@@ -315,6 +315,10 @@ io.on('connection', (socket) => {
       }
     }
   })
+
+  socket.on('message:send', (roomId, message) => {
+    io.to(roomId).emit('message:received', playerId, message)
+  })
 })
 
 server.listen(PORT, () => {
