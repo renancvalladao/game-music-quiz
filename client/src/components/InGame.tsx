@@ -17,6 +17,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player/youtube'
 import { SocketContext } from '../context/SocketContext'
 import { GameHeader } from './GameHeader'
+import { PlayerAnswer } from './PlayerAnswer'
 import { SongInfo } from './SongInfo'
 import { Standings } from './Standings'
 
@@ -32,6 +33,12 @@ type SongDetails = {
   gameTitle: string
   name: string
   composer: string
+}
+
+type PlayerStanding = {
+  id: string
+  name: string
+  score: number
 }
 
 type InGameProps = {
@@ -59,12 +66,28 @@ export const InGame = ({ room }: InGameProps) => {
   const [answer, setAnswer] = useState('')
   const [countdown, setCountdown] = useState(0)
   const [isCorrect, setIsCorrect] = useState(false)
-  const [showBorder, setShowBorder] = useState(false)
+  const [showAnswer, setShowAnswer] = useState(false)
   const [round, setRound] = useState(0)
-  const [volume, setVolume] = useState(10)
+  const [volume, setVolume] = useState(30)
   const [seekTo, setSeekTo] = useState(0)
+  const [standings, setStandings] = useState<PlayerStanding[]>([])
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
+  const scrollColor = useColorModeValue('purple.200', 'purple.800')
+
+  useEffect(() => {
+    setStandings(
+      room.players
+        .map((player) => {
+          return {
+            id: player.id,
+            name: player.username,
+            score: player.score || 0
+          }
+        })
+        .sort((p1, p2) => p2.score - p1.score)
+    )
+  }, [room])
 
   useEffect(() => {
     socket.on('game:song', (url, seek) => {
@@ -83,7 +106,7 @@ export const InGame = ({ room }: InGameProps) => {
 
     socket.on('game:details', (song) => {
       setSongDetails(song)
-      setShowBorder(true)
+      setShowAnswer(true)
     })
 
     socket.on('game:finished', () => {
@@ -171,7 +194,7 @@ export const InGame = ({ room }: InGameProps) => {
                 setGameState(GameState.PLAYING)
                 setAnswer('')
                 setSongDetails(EMPTY_SONG_DETAILS)
-                setShowBorder(false)
+                setShowAnswer(false)
                 setRound((prevRound) => prevRound + 1)
               }}
             />
@@ -181,15 +204,7 @@ export const InGame = ({ room }: InGameProps) => {
             justifyContent={'space-around'}
             alignItems={'start'}
           >
-            <Standings
-              standings={room.players.map((player) => {
-                return {
-                  id: player.id,
-                  name: player.username,
-                  score: player.score || 0
-                }
-              })}
-            />
+            <Standings standings={standings} />
             <VStack w="520px" spacing={'4'}>
               <AspectRatio w="100%" ratio={5 / 3}>
                 <Box bg={bgColor}>
@@ -216,13 +231,13 @@ export const InGame = ({ room }: InGameProps) => {
                   inputValue={filter}
                   value={answer ? { value: answer, label: answer } : null}
                   focusBorderColor={
-                    showBorder
+                    showAnswer
                       ? isCorrect
                         ? 'green.500'
                         : 'red.500'
                       : 'blue.500'
                   }
-                  isInvalid={showBorder}
+                  isInvalid={showAnswer}
                   blurInputOnSelect={true}
                   openMenuOnClick={false}
                   controlShouldRenderValue={shouldRenderValue}
@@ -246,6 +261,35 @@ export const InGame = ({ room }: InGameProps) => {
               </Box>
             </VStack>
             <SongInfo name={songDetails.name} composer={songDetails.composer} />
+          </HStack>
+          <HStack
+            maxW={'calc(100vw - 500px)'}
+            overflowX={'auto'}
+            pt={'6'}
+            pb={'3'}
+            sx={{
+              '&::-webkit-scrollbar': {
+                height: '4px'
+              },
+              '&::-webkit-scrollbar-track': {
+                height: '6px'
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: scrollColor,
+                borderRadius: '24px'
+              }
+            }}
+            spacing={'8'}
+            shouldWrapChildren={true}
+            alignItems={'end'}
+          >
+            {room.players.map((player) => (
+              <PlayerAnswer
+                key={player.id}
+                username={player.username}
+                answer={!showAnswer ? '?' : player.answer || '...'}
+              />
+            ))}
           </HStack>
         </VStack>
       )}

@@ -30,6 +30,7 @@ type Player = {
   buffered: boolean
   answered: boolean
   score: number
+  answer?: string
 }
 
 type Game = {
@@ -288,15 +289,13 @@ io.on('connection', (socket) => {
     } else {
       correct = false
     }
+    player.answer = answer
     player.answered = true
     socket.emit('game:checked', correct)
     if (room.players.filter((p) => !p.answered).length === 0) {
       room.players.forEach((p) => (p.answered = false))
       io.to(roomId).emit('game:details', room.song)
-      io.to(roomId).emit(
-        'room:standings',
-        [...room.players].sort((p1, p2) => p2.score - p1.score)
-      )
+      io.to(roomId).emit('room:standings', room.players)
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
       } else {
