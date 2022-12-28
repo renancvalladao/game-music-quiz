@@ -26,7 +26,12 @@ export const Chat = ({ room }: ChatProps) => {
     room.players.forEach((player) => {
       usernames[player.id] = player.username
     })
-    setUsernamesMap(usernames)
+    setUsernamesMap((prevUserNames) => {
+      return {
+        ...prevUserNames,
+        ...usernames
+      }
+    })
   }, [room])
 
   useEffect(() => {
