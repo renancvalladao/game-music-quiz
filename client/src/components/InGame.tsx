@@ -130,7 +130,7 @@ export const InGame = ({ room }: InGameProps) => {
   return (
     <>
       {room.playing && (
-        <VStack spacing={'24px'}>
+        <VStack spacing={'4'} pt={2}>
           <Flex w={'95%'} justifyContent={'end'}>
             <Slider
               w={'32'}
@@ -190,7 +190,7 @@ export const InGame = ({ room }: InGameProps) => {
                 }
               })}
             />
-            <VStack w="520px" spacing={'24px'}>
+            <VStack w="520px" spacing={'4'}>
               <AspectRatio w="100%" ratio={5 / 3}>
                 <Box bg={bgColor}>
                   <Heading>

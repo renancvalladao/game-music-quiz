@@ -148,7 +148,7 @@ export const Room = () => {
           <div>Loading</div>
         ) : (
           <>
-            <Box w={'100%'} pt={8}>
+            <Box w={'100%'}>
               <InGame room={room} />
               <Lobby room={room} />
             </Box>

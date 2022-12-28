@@ -15,7 +15,7 @@ export const Lobby = ({ room }: LobbyProps) => {
   return (
     <>
       {!room.playing && (
-        <VStack px={64} spacing={8}>
+        <VStack px={64} spacing={8} pt={8}>
           {isHost ? (
             <Button
               disabled={room.players.some((player) => !player.ready)}
