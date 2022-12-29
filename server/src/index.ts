@@ -74,6 +74,7 @@ const leaveRoom = (room: Room, playerId: string) => {
       }
     }
     io.emit('room:closed', roomId)
+    console.log(`=> [Room ${roomId}] Room closed`)
     return
   }
   io.emit('room:left', { roomId, playerId })
@@ -85,7 +86,8 @@ const leaveRoom = (room: Room, playerId: string) => {
 }
 
 io.on('connection', (socket) => {
-  console.log(`User ${socket.id} connected`)
+  console.log(`=> User ${socket.id} connected`)
+
   let playerId = socket.handshake.auth.playerId
   if (!playerId) {
     playerId = randomUUID()
@@ -141,6 +143,8 @@ io.on('connection', (socket) => {
 
     io.emit('room:created', room)
     callback(roomId)
+    console.log('=> Room created:')
+    console.log(room)
   })
 
   socket.on('room:join', (roomId, callback) => {
@@ -180,6 +184,9 @@ io.on('connection', (socket) => {
       })
       callback(room)
       io.emit('room:joined', roomId, { playerId, username })
+      console.log(
+        `=> [Room ${roomId}] Player joined {id: ${playerId}, username: ${username}}`
+      )
     }
   })
 
@@ -192,6 +199,9 @@ io.on('connection', (socket) => {
 
     socket.leave(roomId)
     leaveRoom(room, playerId)
+    console.log(
+      `=> [Room ${roomId}] Player left {id: ${playerId}, username: ${username}}`
+    )
   })
 
   socket.on('room:ready', (roomId) => {
@@ -238,6 +248,7 @@ io.on('connection', (socket) => {
     if (room.players.filter((p) => !p.ready).length === 0 && !room.playing) {
       room.playing = true
       io.emit('room:started', roomId)
+      console.log(`=> [Room ${roomId}] Game started`)
       const gamesOptions = games.map((game) => game.details.title).sort()
       io.to(roomId).emit('game:options', gamesOptions)
       room.round++
@@ -249,6 +260,9 @@ io.on('connection', (socket) => {
       }
       const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
       io.to(roomId).emit('game:song', song.url, seek)
+      console.log(
+        `=> [Room ${roomId}] Sending song ${song.name} (${game.title})`
+      )
     }
   })
 
@@ -265,9 +279,13 @@ io.on('connection', (socket) => {
       return
     }
     player.buffered = true
+    console.log(
+      `=> [Room ${roomId}] Player buffered {id: ${playerId}, username: ${username}}`
+    )
     if (room.players.filter((p) => !p.buffered).length === 0) {
       room.players.forEach((p) => (p.buffered = false))
       io.to(roomId).emit('game:play')
+      console.log(`=> [Room ${roomId}] All players buffered`)
     }
   })
 
@@ -292,12 +310,17 @@ io.on('connection', (socket) => {
     player.answer = answer
     player.answered = true
     socket.emit('game:checked', correct)
+    console.log(
+      `=> [Room ${roomId}] Player answered {id: ${playerId}, username: ${username}}`
+    )
     if (room.players.filter((p) => !p.answered).length === 0) {
       room.players.forEach((p) => (p.answered = false))
+      console.log(`=> [Room ${roomId}] All players answered`)
       io.to(roomId).emit('game:details', room.song)
       io.to(roomId).emit('room:standings', room.players)
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
+        console.log(`=> [Room ${roomId}] Game finished`)
       } else {
         const timeout = setTimeout(() => {
           room.round++
@@ -309,6 +332,9 @@ io.on('connection', (socket) => {
           }
           const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
           io.to(roomId).emit('game:song', song.url, seek)
+          console.log(
+            `=> [Room ${roomId}] Sending song ${song.name} (${game.title})`
+          )
           clearTimeout(timeout)
         }, 5 * 1000)
       }
