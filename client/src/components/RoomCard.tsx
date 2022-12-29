@@ -10,7 +10,8 @@ import {
   Heading,
   Progress,
   Text,
-  Tooltip
+  Tooltip,
+  useColorModeValue
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 
@@ -39,7 +40,7 @@ export const RoomCard = ({
   const isFull = players.length === config.capacity
 
   return (
-    <Card w="100%">
+    <Card w="100%" bgColor={useColorModeValue('white', 'gray.700')}>
       <CardHeader>
         <Heading size="md">{name}</Heading>
         <Text>
@@ -55,8 +56,8 @@ export const RoomCard = ({
       </CardHeader>
       <CardBody>
         <Progress
-          borderRadius={'lg'}
-          size={'lg'}
+          borderRadius={'md'}
+          size={'md'}
           value={(players.length / config.capacity) * 100}
           colorScheme={isFull ? 'green' : 'blue'}
         />
@@ -83,6 +84,7 @@ export const RoomCard = ({
         <Button
           onClick={() => navigate(`/room/${id}`)}
           isDisabled={isFull || playing}
+          colorScheme="blue"
         >
           Join
         </Button>

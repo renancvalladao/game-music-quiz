@@ -1,4 +1,10 @@
-import { Card, CardHeader, Heading, VStack } from '@chakra-ui/react'
+import {
+  Card,
+  CardHeader,
+  Heading,
+  useColorModeValue,
+  VStack
+} from '@chakra-ui/react'
 
 type GameHeaderProps = {
   totalSongs: number
@@ -12,7 +18,13 @@ export const GameHeader = ({
   gameTitle
 }: GameHeaderProps) => {
   return (
-    <Card h={'fit-content'} minW={'64'} size={'sm'} align={'center'}>
+    <Card
+      h={'fit-content'}
+      minW={'64'}
+      size={'sm'}
+      align={'center'}
+      bgColor={useColorModeValue('white', 'gray.700')}
+    >
       <CardHeader>
         <VStack>
           <Heading size="md">

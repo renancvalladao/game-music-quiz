@@ -4,7 +4,6 @@ import {
   Button,
   Flex,
   HStack,
-  IconButton,
   Link,
   Text,
   useColorMode,
@@ -18,25 +17,25 @@ export const NavBar = () => {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
-    <Box bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box bg={useColorModeValue('gray.700', 'gray.800')}>
       <Flex h={16} px={64} alignItems={'center'}>
-        <Text fontSize={'4xl'}>GMQ</Text>
+        <Text fontSize={'4xl'} color={'white'}>
+          GMQ
+        </Text>
         <HStack spacing={'10'} ml={20} flexGrow={'1'}>
-          <Link as={RouterLink} to={'/'}>
+          <Link as={RouterLink} to={'/'} color={'white'}>
             Home
           </Link>
-          <Link as={RouterLink} to={'/rooms'}>
+          <Link as={RouterLink} to={'/rooms'} color={'white'}>
             Rooms
           </Link>
         </HStack>
-        <Button mr={20} onClick={toggleColorMode}>
+        <Button mr={20} onClick={toggleColorMode} colorScheme={'blue'}>
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         </Button>
-        <IconButton
-          aria-label="Settings"
-          icon={<SettingsIcon />}
-          onClick={onOpen}
-        />
+        <Button onClick={onOpen} colorScheme={'blue'}>
+          <SettingsIcon />
+        </Button>
         {isOpen && <SettingsModal isOpen={isOpen} onClose={onClose} />}
       </Flex>
     </Box>

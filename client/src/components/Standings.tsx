@@ -4,7 +4,8 @@ import {
   CardHeader,
   Center,
   Heading,
-  Text
+  Text,
+  useColorModeValue
 } from '@chakra-ui/react'
 
 type StandingsProps = {
@@ -17,7 +18,12 @@ type StandingsProps = {
 
 export const Standings = ({ standings }: StandingsProps) => {
   return (
-    <Card h={'fit-content'} w={'56'} size={'sm'}>
+    <Card
+      h={'fit-content'}
+      w={'56'}
+      size={'sm'}
+      bgColor={useColorModeValue('white', 'gray.700')}
+    >
       <CardHeader>
         <Center>
           <Heading size="md">Standings</Heading>

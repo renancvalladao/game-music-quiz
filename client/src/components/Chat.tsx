@@ -55,15 +55,15 @@ export const Chat = ({ room }: ChatProps) => {
     <Stack
       h={'calc(100vh - 64px)'}
       w={'500px'}
-      bg={useColorModeValue('gray.50', 'gray.600')}
+      bg={useColorModeValue('gray.400', 'gray.700')}
       justifyContent={'center'}
       alignItems={'center'}
     >
-      <Stack w={'96%'} h={'99%'} justifyContent={'space-between'}>
+      <Stack w={'96%'} h={'98%'} justifyContent={'space-between'}>
         <VStack
           borderRadius={'md'}
           flexGrow={1}
-          bg={useColorModeValue('gray.200', 'gray.800')}
+          bg={useColorModeValue('gray.50', 'gray.800')}
           p={'2'}
           overflow={'auto'}
           sx={{
@@ -74,7 +74,7 @@ export const Chat = ({ room }: ChatProps) => {
               width: '6px'
             },
             '&::-webkit-scrollbar-thumb': {
-              background: useColorModeValue('purple.200', 'purple.800'),
+              background: useColorModeValue('blue.400', 'blue.800'),
               borderRadius: '24px'
             }
           }}
@@ -90,7 +90,8 @@ export const Chat = ({ room }: ChatProps) => {
           <div ref={messagesRef} />
         </VStack>
         <Textarea
-          bg={useColorModeValue('gray.200', 'gray.800')}
+          borderWidth={0}
+          bg={useColorModeValue('gray.50', 'gray.800')}
           placeholder="Write message..."
           resize={'none'}
           value={messageText}

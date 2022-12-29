@@ -14,7 +14,7 @@ export const Message = ({ author, content, isSelf }: MessageProps) => {
         borderRadius={'md'}
         py={1}
         px={2}
-        bg={useColorModeValue('gray.50', 'gray.600')}
+        bg={useColorModeValue('gray.200', 'gray.600')}
         ml={isSelf ? 0 : 2}
         mr={isSelf ? 2 : 0}
       >

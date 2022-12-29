@@ -41,7 +41,7 @@ export const PlayerAvatar = ({ name, isHost, isReady }: PlayerAvatarProps) => {
           pl={14}
           pr={6}
           h={12}
-          bg={useColorModeValue('gray.100', 'gray.900')}
+          bg={useColorModeValue('white', 'gray.700')}
           alignItems={'center'}
           justifyContent={'center'}
           borderRadius={10}

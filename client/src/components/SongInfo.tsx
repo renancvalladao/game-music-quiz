@@ -4,7 +4,8 @@ import {
   CardHeader,
   Heading,
   Stack,
-  Text
+  Text,
+  useColorModeValue
 } from '@chakra-ui/react'
 
 type SongInfoProps = {
@@ -14,7 +15,13 @@ type SongInfoProps = {
 
 export const SongInfo = ({ name, composer }: SongInfoProps) => {
   return (
-    <Card h={'fit-content'} w={'56'} size={'sm'} align={'center'}>
+    <Card
+      h={'fit-content'}
+      w={'56'}
+      size={'sm'}
+      align={'center'}
+      bgColor={useColorModeValue('white', 'gray.700')}
+    >
       <CardHeader pb={0}>
         <Heading size="md">Song Info</Heading>
       </CardHeader>

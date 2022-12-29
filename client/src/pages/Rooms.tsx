@@ -7,6 +7,7 @@ import {
   InputGroup,
   InputLeftElement,
   SimpleGrid,
+  useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
@@ -120,12 +121,16 @@ export const Rooms = () => {
       <NavBar />
       <Box px={64} pt={8}>
         <Flex mb={8}>
-          <Button onClick={onOpen} colorScheme={'green'} size={'lg'} mr={4}>
+          <Button onClick={onOpen} colorScheme={'blue'} size={'lg'} mr={4}>
             New
           </Button>
           <InputGroup size={'lg'}>
             <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
             <Input
+              _hover={{ bg: '' }}
+              _focus={{ bg: useColorModeValue('white', 'gray.700') }}
+              bgColor={useColorModeValue('white', 'gray.700')}
+              variant={'filled'}
               value={searchValue}
               onChange={handleChange}
               placeholder="Search rooms..."

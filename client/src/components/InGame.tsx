@@ -54,7 +54,7 @@ const EMPTY_SONG_DETAILS = {
 export const InGame = ({ room }: InGameProps) => {
   const videoRef = useRef<ReactPlayer>(null)
   const socket = useContext(SocketContext)
-  const bgColor = useColorModeValue('gray.100', 'gray.900')
+  const bgColor = useColorModeValue('white', 'gray.700')
   const [gamesOptions, setGamesOptions] = useState<
     { value: string; label: string }[]
   >([])
@@ -73,7 +73,7 @@ export const InGame = ({ room }: InGameProps) => {
   const [standings, setStandings] = useState<PlayerStanding[]>([])
   const [songDetails, setSongDetails] =
     useState<SongDetails>(EMPTY_SONG_DETAILS)
-  const scrollColor = useColorModeValue('purple.200', 'purple.800')
+  const scrollColor = useColorModeValue('blue.400', 'blue.800')
 
   useEffect(() => {
     setStandings(
@@ -208,7 +208,7 @@ export const InGame = ({ room }: InGameProps) => {
             <Standings standings={standings} />
             <VStack w="520px" spacing={'4'}>
               <AspectRatio w="100%" ratio={5 / 3}>
-                <Box bg={bgColor}>
+                <Box bg={bgColor} borderRadius={'md'}>
                   <Heading>
                     {gameState === GameState.PLAYING
                       ? countdown
@@ -258,6 +258,15 @@ export const InGame = ({ room }: InGameProps) => {
                       setShouldRenderValue(false)
                   }}
                   onBlur={() => setShouldRenderValue(true)}
+                  variant="filled"
+                  chakraStyles={{
+                    control: (provided) => ({
+                      ...provided,
+                      bgColor: bgColor,
+                      _hover: { bg: '' },
+                      _focus: { bg: bgColor }
+                    })
+                  }}
                 />
               </Box>
             </VStack>
