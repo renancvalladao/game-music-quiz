@@ -127,6 +127,7 @@ export const InGame = ({ room }: InGameProps) => {
       socket.off('game:checked')
       socket.off('game:details')
       socket.off('game:finished')
+      socket.off('game:options')
     }
   }, [socket])
 
