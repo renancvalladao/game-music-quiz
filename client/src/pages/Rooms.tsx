@@ -103,6 +103,18 @@ export const Rooms = () => {
       })
     })
 
+    socket.on('room:finished', (roomId) => {
+      setRooms((prevRooms) => {
+        prevRooms.forEach((room) => {
+          if (room.id === roomId) {
+            room.playing = false
+          }
+        })
+
+        return [...prevRooms]
+      })
+    })
+
     return () => {
       socket.off('room:created')
       socket.off('room:joined')
@@ -110,6 +122,7 @@ export const Rooms = () => {
       socket.off('room:host')
       socket.off('room:started')
       socket.off('room:changed')
+      socket.off('room:finished')
     }
   }, [socket])
 

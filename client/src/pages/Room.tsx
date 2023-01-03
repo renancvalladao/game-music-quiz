@@ -127,6 +127,21 @@ export const Room = () => {
       })
     })
 
+    socket.on('room:finished', (roomId) => {
+      setRoom((prevRoom) => {
+        if (!prevRoom) return null
+
+        if (prevRoom.id !== roomId) return prevRoom
+        prevRoom.playing = false
+        prevRoom.players.forEach((player) => {
+          player.ready = player.id === prevRoom.host ? true : false
+          player.score = 0
+        })
+
+        return { ...prevRoom }
+      })
+    })
+
     return () => {
       socket.emit('room:leave', roomId)
       socket.off('room:joined')
@@ -137,6 +152,7 @@ export const Room = () => {
       socket.off('player:ready')
       socket.off('player:unready')
       socket.off('username:changed')
+      socket.off('room:finished')
     }
   }, [socket, roomId])
 
@@ -149,8 +165,7 @@ export const Room = () => {
         ) : (
           <>
             <Box w={'100%'}>
-              <InGame room={room} />
-              <Lobby room={room} />
+              {room.playing ? <InGame room={room} /> : <Lobby room={room} />}
             </Box>
             <Chat room={room} />
           </>

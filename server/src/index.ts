@@ -321,6 +321,17 @@ io.on('connection', (socket) => {
       if (room.round === room.config.songs) {
         io.to(roomId).emit('game:finished')
         console.log(`=> [Room ${roomId}] Game finished`)
+        setTimeout(() => {
+          room.playing = false
+          room.players.forEach((player) => {
+            player.answered = false
+            player.buffered = false
+            player.ready = player.id === room.host ? true : false
+            player.score = 0
+          })
+          room.round = 0
+          io.emit('room:finished', roomId)
+        }, 5000)
       } else {
         const timeout = setTimeout(() => {
           room.round++
