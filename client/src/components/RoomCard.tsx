@@ -44,7 +44,8 @@ export const RoomCard = ({
       <CardHeader>
         <Heading size="md">{name}</Heading>
         <Text>
-          Host: {players.filter((player) => player.id === host)[0].username}
+          Host:{' '}
+          {players.filter((player) => player.id === host)[0]?.username || ''}
         </Text>
         {playing ? (
           <Badge colorScheme="purple">Playing</Badge>
