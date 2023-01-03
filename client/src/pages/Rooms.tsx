@@ -121,10 +121,10 @@ export const Rooms = () => {
       <NavBar />
       <Box px={64} pt={8}>
         <Flex mb={8}>
-          <Button onClick={onOpen} colorScheme={'blue'} size={'lg'} mr={4}>
+          <Button onClick={onOpen} colorScheme={'blue'} size={'md'} mr={4}>
             New
           </Button>
-          <InputGroup size={'lg'}>
+          <InputGroup size={'md'}>
             <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
             <Input
               _hover={{ bg: '' }}

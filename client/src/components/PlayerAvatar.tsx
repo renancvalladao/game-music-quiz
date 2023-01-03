@@ -7,6 +7,7 @@ type PlayerAvatarProps = {
 }
 
 export const PlayerAvatar = ({ name, isHost, isReady }: PlayerAvatarProps) => {
+  const bgColor = useColorModeValue('gray.100', 'gray.900')
   const hostBackgroundColor = useColorModeValue('blue.300', 'blue.700')
 
   return (
@@ -15,7 +16,7 @@ export const PlayerAvatar = ({ name, isHost, isReady }: PlayerAvatarProps) => {
         bg="gray.400"
         name={name}
         showBorder
-        borderColor={isReady ? 'green.500' : ''}
+        borderColor={isReady ? 'green.500' : bgColor}
         borderWidth={'medium'}
         size={'xl'}
       />
