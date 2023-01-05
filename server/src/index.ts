@@ -2,7 +2,7 @@ import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
 import { randomUUID } from 'crypto'
-import games from './games'
+import { getAllGames, getRandomSong } from './db'
 
 const PORT = process.env.PORT || 3001
 const SONG_PARTS = 3
@@ -16,12 +16,6 @@ const io = new Server(server, {
 })
 
 const rooms: Room[] = []
-
-const getRandomSong = (games: Game[]) => {
-  const game = games[Math.floor(Math.random() * games.length)]
-  const song = game.songs[Math.floor(Math.random() * game.songs.length)]
-  return { game: game.details, song }
-}
 
 const leaveRoom = (room: Room, playerId: string) => {
   const roomId = room.id
@@ -198,7 +192,7 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('player:unready', playerId)
   })
 
-  socket.on('room:start', (roomId) => {
+  socket.on('room:start', async (roomId) => {
     const [room] = rooms.filter((room) => room.id === roomId)
     if (!room) {
       // TODO: ERROR
@@ -209,19 +203,20 @@ io.on('connection', (socket) => {
       room.playing = true
       io.emit('room:started', roomId)
       console.log(`=> [Room ${roomId}] Game started`)
-      const gamesOptions = games.map((game) => game.details.title).sort()
+      const gamesOptions = await getAllGames()
       io.to(roomId).emit('game:options', gamesOptions)
       room.round++
-      const { game, song } = getRandomSong(games)
+      const randomSong = await getRandomSong()
       room.song = {
-        gameTitle: game.title,
-        composer: game.composer,
-        name: song.name
+        gameTitle: randomSong.game_name,
+        composer: randomSong.song_composer,
+        name: randomSong.song_name,
+        alternativeAnswers: randomSong.alternative_answers
       }
       const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
-      io.to(roomId).emit('game:song', song.url, seek)
+      io.to(roomId).emit('game:song', randomSong.song_video_url, seek)
       console.log(
-        `=> [Room ${roomId}] Sending song ${song.name} (${game.title})`
+        `=> [Room ${roomId}] Sending song ${randomSong.song_name} (${randomSong.game_name})`
       )
     }
   })
@@ -261,7 +256,10 @@ io.on('connection', (socket) => {
       return
     }
     let correct
-    if (answer.toLowerCase() === room.song?.gameTitle.toLowerCase()) {
+    if (
+      answer === room.song?.gameTitle ||
+      room.song?.alternativeAnswers.includes(answer)
+    ) {
       correct = true
       player.score++
     } else {
@@ -293,18 +291,19 @@ io.on('connection', (socket) => {
           io.emit('room:finished', roomId)
         }, 5000)
       } else {
-        const timeout = setTimeout(() => {
+        const timeout = setTimeout(async () => {
           room.round++
-          const { game, song } = getRandomSong(games)
+          const randomSong = await getRandomSong()
           room.song = {
-            gameTitle: game.title,
-            composer: game.composer,
-            name: song.name
+            gameTitle: randomSong.game_name,
+            composer: randomSong.song_composer,
+            name: randomSong.song_name,
+            alternativeAnswers: randomSong.alternative_answers
           }
           const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
-          io.to(roomId).emit('game:song', song.url, seek)
+          io.to(roomId).emit('game:song', randomSong.song_video_url, seek)
           console.log(
-            `=> [Room ${roomId}] Sending song ${song.name} (${game.title})`
+            `=> [Room ${roomId}] Sending song ${randomSong.song_name} (${randomSong.game_name})`
           )
           clearTimeout(timeout)
         }, 5 * 1000)

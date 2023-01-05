@@ -14,6 +14,7 @@ type Room = {
     gameTitle: string
     name: string
     composer: string
+    alternativeAnswers: string[]
   }
 }
 
