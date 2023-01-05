@@ -59,7 +59,16 @@ export const getRandomSong = async (): Promise<{
       songs s 
       JOIN games g ON g.id = s.game_id 
     WHERE 
-      s.id = 193
+      s.game_id = (
+        SELECT 
+          id 
+        FROM 
+          games 
+        ORDER BY 
+          RANDOM() 
+        LIMIT 
+          1
+      ) 
     ORDER BY 
       RANDOM() 
     LIMIT 
