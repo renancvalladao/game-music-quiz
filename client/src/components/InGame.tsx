@@ -176,6 +176,7 @@ export const InGame = ({ room }: InGameProps) => {
           />
           <VisuallyHidden>
             <ReactPlayer
+              loop={true}
               ref={videoRef}
               url={videoUrl}
               volume={volume / (100 * 5)}
