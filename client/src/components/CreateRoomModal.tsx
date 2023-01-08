@@ -34,6 +34,7 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState('5')
   const [numberOfSongs, setNumberOfSongs] = useState('15')
   const [guessTime, setGuessTime] = useState('20')
+  const [isLoading, setIsLoading] = useState(false)
   const isError = roomName === ''
 
   const createRoom = () => {
@@ -57,6 +58,7 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
     <Modal
       isOpen={isOpen}
       onClose={() => {
+        if (isLoading) return
         setRoomName('')
         setNumberOfPlayers('5')
         setNumberOfSongs('15')
@@ -136,15 +138,12 @@ export const CreateRoomModal = ({ isOpen, onClose }: CreateRoomModalProps) => {
 
         <ModalFooter>
           <Button
+            isLoading={isLoading}
             colorScheme="green"
-            disabled={isError}
+            disabled={isError || isLoading}
             onClick={() => {
+              setIsLoading(true)
               createRoom()
-              setRoomName('')
-              setNumberOfPlayers('5')
-              setNumberOfSongs('15')
-              setGuessTime('20')
-              onClose()
             }}
           >
             Create

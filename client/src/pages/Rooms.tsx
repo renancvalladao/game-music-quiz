@@ -2,11 +2,13 @@ import { SearchIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
+  Center,
   Flex,
   Input,
   InputGroup,
   InputLeftElement,
   SimpleGrid,
+  Spinner,
   useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react'
@@ -20,11 +22,13 @@ export const Rooms = () => {
   const socket = useContext(SocketContext)
   const [rooms, setRooms] = useState<Room[]>([])
   const [searchValue, setSearchValue] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     socket.emit('room:list', (res: { data: Room[] }) => {
       setRooms(res.data)
+      setIsLoading(false)
     })
 
     socket.on('room:created', (room: Room) => {
@@ -150,20 +154,26 @@ export const Rooms = () => {
             />
           </InputGroup>
         </Flex>
-        <SimpleGrid
-          spacing={6}
-          templateColumns="repeat(auto-fill, minmax(384px, 1fr))"
-        >
-          {rooms
-            .filter((room) =>
-              room.name
-                .toLocaleLowerCase()
-                .includes(searchValue.toLocaleLowerCase())
-            )
-            .map((room) => (
-              <RoomCard key={room.id} {...room} />
-            ))}
-        </SimpleGrid>
+        {isLoading ? (
+          <Center w={'100%'} pt={8}>
+            <Spinner size="xl" color="blue.500" thickness="4px" />
+          </Center>
+        ) : (
+          <SimpleGrid
+            spacing={6}
+            templateColumns="repeat(auto-fill, minmax(384px, 1fr))"
+          >
+            {rooms
+              .filter((room) =>
+                room.name
+                  .toLocaleLowerCase()
+                  .includes(searchValue.toLocaleLowerCase())
+              )
+              .map((room) => (
+                <RoomCard key={room.id} {...room} />
+              ))}
+          </SimpleGrid>
+        )}
         <CreateRoomModal isOpen={isOpen} onClose={onClose} />
       </Box>
     </>

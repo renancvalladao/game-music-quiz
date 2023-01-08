@@ -1,5 +1,5 @@
 import { NavBar } from '../components/NavBar'
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Center, Flex, Spinner } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { SocketContext } from '../context/SocketContext'
@@ -161,7 +161,9 @@ export const Room = () => {
       <NavBar />
       <Flex>
         {!room ? (
-          <div>Loading</div>
+          <Center w={'100%'} pt={8}>
+            <Spinner size="xl" color="blue.500" thickness="4px" />
+          </Center>
         ) : (
           <>
             <Box w={'100%'}>
