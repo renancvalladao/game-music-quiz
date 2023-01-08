@@ -19,14 +19,30 @@ export const NavBar = () => {
   return (
     <Box bg={useColorModeValue('gray.700', 'gray.800')}>
       <Flex h={16} px={64} alignItems={'center'}>
-        <Text fontSize={'4xl'} color={'white'}>
+        <Text
+          fontSize={'3xl'}
+          fontWeight={'semibold'}
+          color={useColorModeValue('gray.200', 'gray.300')}
+        >
           GMQ
         </Text>
         <HStack spacing={'10'} ml={20} flexGrow={'1'}>
-          <Link as={RouterLink} to={'/'} color={'white'}>
+          <Link
+            fontSize={'md'}
+            as={RouterLink}
+            to={'/'}
+            color={useColorModeValue('gray.300', 'gray.400')}
+            fontWeight={'semibold'}
+          >
             Home
           </Link>
-          <Link as={RouterLink} to={'/rooms'} color={'white'}>
+          <Link
+            fontSize={'md'}
+            as={RouterLink}
+            to={'/rooms'}
+            color={useColorModeValue('gray.300', 'gray.400')}
+            fontWeight={'semibold'}
+          >
             Rooms
           </Link>
         </HStack>
