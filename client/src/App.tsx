@@ -4,6 +4,7 @@ import { SocketContextProvider } from './context/SocketContext'
 import { Home } from './pages/Home'
 import { Room } from './pages/Room'
 import { Rooms } from './pages/Rooms'
+import { Soundtracks } from './pages/Soundtracks'
 import theme from './theme'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="rooms" element={<Rooms />} />
           <Route path="room/:roomId" element={<Room />} />
+          <Route path="soundtracks" element={<Soundtracks />} />
         </Routes>
       </ChakraProvider>
     </SocketContextProvider>

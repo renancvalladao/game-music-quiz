@@ -64,6 +64,24 @@ export const NavBar = () => {
           >
             Rooms
           </Link>
+          <Link
+            fontSize={'md'}
+            as={RouterLink}
+            to={'/soundtracks'}
+            color={useColorModeValue('gray.300', 'gray.400')}
+            fontWeight={'semibold'}
+            _hover={{
+              textDecor: 'none',
+              color: useColorModeValue('gray.200', 'gray.300')
+            }}
+            _activeLink={{
+              borderBottomWidth: '2px',
+              borderColor: useColorModeValue('gray.200', 'gray.300'),
+              color: useColorModeValue('gray.200', 'gray.300')
+            }}
+          >
+            Soundtracks
+          </Link>
         </HStack>
         <Button mr={20} onClick={toggleColorMode} colorScheme={'blue'}>
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
