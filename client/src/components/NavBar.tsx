@@ -10,12 +10,13 @@ import {
   useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react'
-import { Link as RouterLink } from 'react-router-dom'
+import { NavLink as RouterLink } from 'react-router-dom'
 import { SettingsModal } from './SettingsModal'
 
 export const NavBar = () => {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <Box bg={useColorModeValue('gray.700', 'gray.800')}>
       <Flex h={16} px={64} alignItems={'center'}>
@@ -33,6 +34,15 @@ export const NavBar = () => {
             to={'/'}
             color={useColorModeValue('gray.300', 'gray.400')}
             fontWeight={'semibold'}
+            _hover={{
+              textDecor: 'none',
+              color: useColorModeValue('gray.200', 'gray.300')
+            }}
+            _activeLink={{
+              borderBottomWidth: '2px',
+              borderColor: useColorModeValue('gray.200', 'gray.300'),
+              color: useColorModeValue('gray.200', 'gray.300')
+            }}
           >
             Home
           </Link>
@@ -42,6 +52,15 @@ export const NavBar = () => {
             to={'/rooms'}
             color={useColorModeValue('gray.300', 'gray.400')}
             fontWeight={'semibold'}
+            _hover={{
+              textDecor: 'none',
+              color: useColorModeValue('gray.200', 'gray.300')
+            }}
+            _activeLink={{
+              borderBottomWidth: '2px',
+              borderColor: useColorModeValue('gray.200', 'gray.300'),
+              color: useColorModeValue('gray.200', 'gray.300')
+            }}
           >
             Rooms
           </Link>
