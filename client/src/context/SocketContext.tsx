@@ -7,7 +7,7 @@ type SocketContextProps = {
   children: React.ReactNode
 }
 
-const socket = io(process.env.SERVER || 'http://localhost:3001', {
+const socket = io('https://gmq-server.onrender.com', {
   closeOnBeforeunload: false
 }) as PlayerSocket
 

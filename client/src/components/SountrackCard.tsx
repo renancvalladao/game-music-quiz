@@ -104,9 +104,7 @@ export const SoundtrackCard = ({
               onToggle()
               return
             }
-            fetch(
-              `${process.env.SERVER || 'http://localhost:3001'}/songs/${gameId}`
-            )
+            fetch(`https://gmq-server.onrender.com/songs/${gameId}`)
               .then((resp) => resp.json())
               .then((data) => {
                 setSongs(data)
