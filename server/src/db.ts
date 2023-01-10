@@ -83,9 +83,12 @@ export const getRandomSong = async (): Promise<{
   }
 }
 
-export const getAllGames = async (): Promise<string[]> => {
+export const getAllGames = async (): Promise<
+  { id: number; name: string }[]
+> => {
   const query = `
     SELECT 
+      id,
       name 
     FROM 
       games 
@@ -95,8 +98,30 @@ export const getAllGames = async (): Promise<string[]> => {
   const client = await pool.connect()
   try {
     const { rows } = await client.query(query)
-    const gameNames = rows.map((row) => row.name)
-    return gameNames
+    return rows
+  } finally {
+    client.release()
+  }
+}
+
+export const getSongsByGameId = async (
+  gameId: string
+): Promise<{ id: number; name: string }[]> => {
+  const query = `
+    SELECT
+      name,
+      video_url
+    FROM
+      songs
+    WHERE
+      game_id = ${gameId}
+    ORDER BY
+      name;
+  `
+  const client = await pool.connect()
+  try {
+    const { rows } = await client.query(query)
+    return rows
   } finally {
     client.release()
   }
