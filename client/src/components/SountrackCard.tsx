@@ -100,7 +100,7 @@ export const SoundtrackCard = ({
         <IconButton
           aria-label="Fetch soundtrack"
           icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-          variant={'unstyled'}
+          variant={'ghost'}
           isLoading={isLoading}
           onClick={() => {
             if (loaded) {
