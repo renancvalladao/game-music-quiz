@@ -101,6 +101,7 @@ io.on('connection', (socket) => {
     }
     rooms.unshift(room)
 
+    socket.join(roomId)
     io.emit('room:created', room)
     callback(roomId)
     console.log('=> Room created:')
@@ -120,17 +121,17 @@ io.on('connection', (socket) => {
       return
     }
 
+    if (playerId === room.host) {
+      callback(room)
+      return
+    }
+
     if (room.config.capacity === room.players.length) {
       // TODO: FULL
       return
     }
 
     socket.join(roomId)
-
-    if (playerId === room.host) {
-      callback(room)
-      return
-    }
 
     const [player] = room.players.filter((p) => p.id === playerId)
     if (!player) {
