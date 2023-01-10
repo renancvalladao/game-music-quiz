@@ -2,16 +2,22 @@ import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
 import { randomUUID } from 'crypto'
-import { getAllGames, getRandomSong } from './db'
+import { getAllGames, getRandomSong, getSongsByGameId } from './db'
+import cors from 'cors'
 
 const PORT = process.env.PORT || 3001
 const SONG_PARTS = 3
 
 const app = express()
+app.use(
+  cors({
+    origin: [process.env.APP || 'http://localhost:3000']
+  })
+)
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000', 'https://game-music-quiz.netlify.app']
+    origin: [process.env.APP || 'http://localhost:3000']
   }
 })
 
@@ -203,7 +209,7 @@ io.on('connection', (socket) => {
       room.playing = true
       io.emit('room:started', roomId)
       console.log(`=> [Room ${roomId}] Game started`)
-      const gamesOptions = await getAllGames()
+      const gamesOptions = (await getAllGames()).map((game) => game.name)
       io.to(roomId).emit('game:options', gamesOptions)
       room.round++
       const randomSong = await getRandomSong()
@@ -314,6 +320,17 @@ io.on('connection', (socket) => {
   socket.on('message:send', (roomId, message) => {
     io.to(roomId).emit('message:received', playerId, message)
   })
+})
+
+app.get('/games', async (_req, res) => {
+  const games = await getAllGames()
+  res.json(games)
+})
+
+app.get('/songs/:gameId', async (req, res) => {
+  const gameId = req.params.gameId
+  const songs = await getSongsByGameId(gameId)
+  res.json(songs)
 })
 
 server.listen(PORT, () => {
