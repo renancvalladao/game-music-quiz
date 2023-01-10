@@ -1,7 +1,7 @@
 import { createContext, useEffect } from 'react'
 import { io, Socket } from 'socket.io-client'
 
-type PlayerSocket = Socket & { playerId?: string; username?: string }
+type PlayerSocket = Socket & { playerId: string; username: string }
 
 type SocketContextProps = {
   children: React.ReactNode

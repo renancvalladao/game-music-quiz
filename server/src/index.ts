@@ -53,6 +53,7 @@ io.on('connection', (socket) => {
     playerId = randomUUID()
     socket.emit('socket:playerId', playerId)
   }
+  socket.join(playerId)
   let username = socket.handshake.auth.username || playerId
 
   rooms.forEach((room) => {
@@ -221,7 +222,28 @@ io.on('connection', (socket) => {
         alternativeAnswers: randomSong.alternative_answers
       }
       const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
-      io.to(roomId).emit('game:song', randomSong.song_video_url, seek)
+      io.to(roomId)
+        .timeout(5000)
+        .emit(
+          'game:song',
+          randomSong.song_video_url,
+          seek,
+          (_err: any, response: string[]) => {
+            setTimeout(() => {
+              if (response.length !== room.players.length) {
+                room.players.forEach((player) => {
+                  if (!response.includes(player.id)) {
+                    io.to(player.id).emit(
+                      'game:song',
+                      randomSong.song_video_url,
+                      seek
+                    )
+                  }
+                })
+              }
+            }, 5000)
+          }
+        )
       console.log(
         `=> [Room ${roomId}] Sending song ${randomSong.song_name} (${randomSong.game_name})`
       )
@@ -308,7 +330,28 @@ io.on('connection', (socket) => {
             alternativeAnswers: randomSong.alternative_answers
           }
           const seek = Math.floor(Math.random() * SONG_PARTS) * (1 / SONG_PARTS)
-          io.to(roomId).emit('game:song', randomSong.song_video_url, seek)
+          io.to(roomId)
+            .timeout(5000)
+            .emit(
+              'game:song',
+              randomSong.song_video_url,
+              seek,
+              (_err: any, response: string[]) => {
+                setTimeout(() => {
+                  if (response.length !== room.players.length) {
+                    room.players.forEach((player) => {
+                      if (!response.includes(player.id)) {
+                        io.to(player.id).emit(
+                          'game:song',
+                          randomSong.song_video_url,
+                          seek
+                        )
+                      }
+                    })
+                  }
+                }, 5000)
+              }
+            )
           console.log(
             `=> [Room ${roomId}] Sending song ${randomSong.song_name} (${randomSong.game_name})`
           )

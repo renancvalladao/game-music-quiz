@@ -90,11 +90,15 @@ export const InGame = ({ room }: InGameProps) => {
   }, [room])
 
   useEffect(() => {
-    socket.on('game:song', (url, seek) => {
-      setGameState(GameState.BUFFERING)
-      setVideoUrl(url)
-      setSeekTo(seek)
-    })
+    socket.on(
+      'game:song',
+      (url, seek, callback: (playerId: string) => void) => {
+        setGameState(GameState.BUFFERING)
+        setVideoUrl(url)
+        setSeekTo(seek)
+        callback(socket.playerId)
+      }
+    )
 
     socket.on('game:play', () => {
       setCanPlay(true)
