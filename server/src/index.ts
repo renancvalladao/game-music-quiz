@@ -23,28 +23,6 @@ const io = new Server(server, {
 
 const rooms: Room[] = []
 
-const leaveRoom = (room: Room, playerId: string) => {
-  const roomId = room.id
-  room.players = room.players.filter((player) => player.id !== playerId)
-  if (room.players.length === 0) {
-    for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].id === roomId) {
-        rooms.splice(i, 1)
-        break
-      }
-    }
-    io.emit('room:closed', roomId)
-    console.log(`=> [Room ${roomId}] Room closed`)
-    return
-  }
-  io.emit('room:left', { roomId, playerId })
-  if (room.host === playerId) {
-    room.host = room.players[0].id
-    room.players[0].ready = true
-    io.emit('room:host', { roomId, newHostId: room.host })
-  }
-}
-
 io.on('connection', (socket) => {
   console.log(`=> User ${socket.id} connected`)
 
@@ -160,7 +138,24 @@ io.on('connection', (socket) => {
     }
 
     socket.leave(roomId)
-    leaveRoom(room, playerId)
+    room.players = room.players.filter((player) => player.id !== playerId)
+    if (room.players.length === 0) {
+      for (let i = 0; i < rooms.length; i++) {
+        if (rooms[i].id === roomId) {
+          rooms.splice(i, 1)
+          break
+        }
+      }
+      io.emit('room:closed', roomId)
+      console.log(`=> [Room ${roomId}] Room closed`)
+      return
+    }
+    io.emit('room:left', { roomId, playerId })
+    if (room.host === playerId) {
+      room.host = room.players[0].id
+      room.players[0].ready = true
+      io.emit('room:host', { roomId, newHostId: room.host })
+    }
     console.log(
       `=> [Room ${roomId}] Player left {id: ${playerId}, username: ${username}}`
     )
