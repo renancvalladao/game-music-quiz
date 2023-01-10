@@ -20,6 +20,7 @@ import {
   useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react'
+import { useState } from 'react'
 
 type Song = {
   name: string
@@ -42,6 +43,7 @@ export const SoundtrackCard = ({
   setSongs
 }: SoundtrackCardProps) => {
   const { isOpen, onToggle } = useDisclosure()
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <Card
@@ -99,15 +101,18 @@ export const SoundtrackCard = ({
           aria-label="Fetch soundtrack"
           icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
           variant={'unstyled'}
+          isLoading={isLoading}
           onClick={() => {
             if (loaded) {
               onToggle()
               return
             }
+            setIsLoading(true)
             fetch(`https://gmq-server.onrender.com/songs/${gameId}`)
               .then((resp) => resp.json())
               .then((data) => {
                 setSongs(data)
+                setIsLoading(false)
                 onToggle()
               })
           }}
