@@ -49,7 +49,7 @@ export const SoundtrackCard = ({
     <Card
       w="100%"
       bgColor={useColorModeValue('white', 'gray.700')}
-      h={'fit-content;'}
+      h={'fit-content'}
     >
       <CardHeader>
         <Heading size="md">{gameName}</Heading>
@@ -108,7 +108,7 @@ export const SoundtrackCard = ({
               return
             }
             setIsLoading(true)
-            fetch(`https://gmq-server.onrender.com/songs/${gameId}`)
+            fetch(`http://localhost:3001/songs/${gameId}`)
               .then((resp) => resp.json())
               .then((data) => {
                 setSongs(data)

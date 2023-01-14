@@ -40,7 +40,11 @@ export const RoomCard = ({
   const isFull = players.length === config.capacity
 
   return (
-    <Card w="100%" bgColor={useColorModeValue('white', 'gray.700')}>
+    <Card
+      w="100%"
+      bgColor={useColorModeValue('white', 'gray.700')}
+      h={'fit-content'}
+    >
       <CardHeader>
         <Heading size="md">{name}</Heading>
         <Text>
