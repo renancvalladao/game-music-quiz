@@ -30,7 +30,7 @@ export const Soundtracks = () => {
 
   useEffect(() => {
     setIsLoading(true)
-    fetch('https://gmq-server.onrender.com/games')
+    fetch(`${process.env.REACT_APP_GMQ_SERVER}/games`)
       .then((resp) => resp.json())
       .then((data) => {
         setGames(

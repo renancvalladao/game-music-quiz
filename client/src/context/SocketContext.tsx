@@ -7,7 +7,7 @@ type SocketContextProps = {
   children: React.ReactNode
 }
 
-const socket = io('https://gmq-server.onrender.com', {
+const socket = io(`${process.env.REACT_APP_GMQ_SERVER}`, {
   closeOnBeforeunload: false
 }) as PlayerSocket
 

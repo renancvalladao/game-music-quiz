@@ -108,7 +108,7 @@ export const SoundtrackCard = ({
               return
             }
             setIsLoading(true)
-            fetch(`https://gmq-server.onrender.com/songs/${gameId}`)
+            fetch(`${process.env.REACT_APP_GMQ_SERVER}/songs/${gameId}`)
               .then((resp) => resp.json())
               .then((data) => {
                 setSongs(data)
